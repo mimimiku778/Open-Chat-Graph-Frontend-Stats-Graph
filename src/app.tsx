@@ -1,33 +1,33 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import viteLogo from '/vite.svg'
-import './app.css'
+import { useEffect, useRef, useState } from 'preact/hooks'
+import { Box } from '@mui/material'
+import OpenChatChart from './class/OpenChatChart'
+import { render } from 'preact'
+import { preData } from './class/ChartJS/preData'
 
 export function App() {
-  const [count, setCount] = useState(0)
+  const canvas = useRef<HTMLCanvasElement | null>(null)
+
+  useEffect(() => {
+    const chart = new OpenChatChart()
+    chart.init(canvas.current!, 8)
+    chart.render(
+      { date: preData.date, graph1: preData.joinCount, graph2: preData.leaveCount },
+      { label1: 'test', label2: 'test' }
+    )
+  }, [canvas.current])
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
+    <div
+      style="
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        aspect-ratio: 1.8 / 1;
+        user-select: none;
+        -webkit-user-select: none;
+      "
+    >
+      <canvas ref={canvas}></canvas>
+    </div>
   )
 }

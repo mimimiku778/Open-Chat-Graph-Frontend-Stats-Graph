@@ -36,7 +36,7 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
     },
     layout: {
       padding: {
-        left: -5,
+        left: 0,
         top: 0,
       },
     },
@@ -63,8 +63,12 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
         max: labelRangeLine.dataMax,
         display: displayY,
         ticks: {
+          callback: (v: any) => {
+            return `${v}人`
+          },
           stepSize: labelRangeLine.stepSize,
           precision: 0,
+          autoSkip: true,
           padding: paddingY,
           font: {
             size: dataFontSize,
@@ -73,12 +77,18 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
       },
       temperatureChart: {
         position: 'right',
+        max: ocChart.graph2Max,
         display: displayY,
         grid: {
           display: false,
         },
         ticks: {
+          callback: (v: any) => {
+            const value = ocChart.graph2Max - v + 1
+            return value <= ocChart.graph2Max ? `${value}位` : ''
+          },
           precision: 0,
+          autoSkip: true,
           font: {
             size: dataFontSize,
           },

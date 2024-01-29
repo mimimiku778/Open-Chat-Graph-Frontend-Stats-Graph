@@ -2,9 +2,8 @@ import { Chart as ChartJS } from 'chart.js/auto';
 
 export const hideVerticalLinePluginOption =
 {
-  lineWidth: 1,
-  color: 'black',
-  setLineDash: [],
+  lineWidth: 0,
+  setLineDash: [0, 0],
 }
 
 export const verticalLinePlugin = {
@@ -26,14 +25,15 @@ export const verticalLinePlugin = {
       options.x = NaN
     }
   },
+  /* @ts-ignore */
   afterDraw: (chart: ChartJS, args: any, options: any) => {
     const ctx = chart.ctx
     const chartArea = chart.chartArea
     const x = options.x
 
-    if (!isNaN(x)) {
+    if (!isNaN(x) && options.lineWidth) {
       ctx.save()
-      ctx.lineWidth = options.lineWidth || 1
+      ctx.lineWidth = options.lineWidth
       ctx.strokeStyle = options.color || 'black'
       ctx.setLineDash(options.setLineDash || [])
       ctx.beginPath()
@@ -46,7 +46,7 @@ export const verticalLinePlugin = {
   defaults: {
     x: NaN,
     color: 'black',
-    lineWidth: '1',
+    lineWidth: 1,
     setLineDash: [6, 6],
   },
 }

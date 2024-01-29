@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from 'preact/hooks'
-import { Box } from '@mui/material'
+import { useEffect, useRef } from 'preact/hooks'
 import OpenChatChart from './class/OpenChatChart'
-import { render } from 'preact'
 import { preData } from './class/ChartJS/preData'
 
 export function App() {
@@ -11,8 +9,8 @@ export function App() {
     const chart = new OpenChatChart()
     chart.init(canvas.current!, 8)
     chart.render(
-      { date: preData.date, graph1: preData.joinCount, graph2: preData.leaveCount },
-      { label1: 'test', label2: 'test' }
+      { date: preData.date, graph1: preData.leaveCount, graph2: preData.joinCount },
+      { label1: 'メンバー数', label2: '急上昇の最高順位' }
     )
   }, [canvas.current])
 

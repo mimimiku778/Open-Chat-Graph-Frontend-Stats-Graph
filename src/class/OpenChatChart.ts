@@ -16,8 +16,9 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
   option = ModelFactory.initOpenChatChartOption()
   canvas?: HTMLCanvasElement
   limit: ChartLimit = 0
-  zoomWeekday = false
+  zoomWeekday: 0 | 1 | 2 = 0
   isMiniMobile = false
+  graph2Max = 0
 
   constructor() {
     ChartJS.register(ChartDataLabels)
@@ -89,12 +90,14 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
       graph2: li ? this.initData.graph2.slice(li * -1) : this.initData.graph2,
     }
 
+    this.graph2Max = this.data.graph2.reduce((a, b) => Math.max(a, b), -Infinity)
+
     return openChatChartJSFactory(this)
   }
 
   getDate(limit: ChartLimit): (string | string[])[] {
     const data = this.initData.date.slice(this.limit * -1)
-    
+
     if (limit === 8) {
       return formatDates(data)
     } else {

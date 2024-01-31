@@ -15,8 +15,11 @@ export async function fetchApi<T,>(url: string) {
 const ocId = document.getElementById('app')?.dataset.ocId!
 const category = document.getElementById('app')?.dataset.category!
 
+//const BASE_URL = 'http://192.168.11.10'
+const BASE_URL = 'https://openchat-review.me'
+
 export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, isRising: boolean, all: boolean) {
-  fetchApi<RankingPositionChart>(`http://192.168.11.10/oc/${ocId}/position?sort=${param}`).then((data) => {
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then((data) => {
     chart.render({
       date: data.date,
       graph1: data.member,
@@ -25,14 +28,14 @@ export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, isRising
       totalCount: data.totalCount,
     }, {
       label1: 'メンバー数',
-      label2: isRising ? '急上昇の最高順位' : 'ランキングの最高順位',
+      label2: isRising ? '【公式】急上昇の最高順位' : '【公式】ランキング順位',
       category: all ? 'すべて' : category
     })
   })
 }
 
 export function fetchInit(chart: OpenChatChart, label2: string = '') {
-  fetchApi<RankingPositionChart>(`http://192.168.11.10/oc/${ocId}/position?sort=rising`).then((data) => {
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=rising`).then((data) => {
     chart.render({
       date: data.date,
       graph1: data.member,

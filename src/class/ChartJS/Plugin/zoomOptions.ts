@@ -2,6 +2,7 @@ import { Chart as ChartJS } from 'chart.js/auto';
 import OpenChatChart from "../../OpenChatChart";
 import getVerticalLabelRange from "../Util/getVerticalLabelRange";
 import { defaultVerticalLinePluginOption, hideVerticalLinePluginOption } from './verticalLinePlugin';
+import getRankingBarLabelRange from '../Util/getRankingBarLabelRange';
 
 const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
   const min = chart.scales.x.min
@@ -13,15 +14,17 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
   (chart.options!.scales!.rainChart!.ticks as any).stepSize = stepSize
 
   if (ocChart.data.graph2.length) {
-    ocChart.graph2Max = ocChart.data.graph2.slice(min, max + 1).reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
+    const graph2 = ocChart.data.graph2.slice(min, max + 1)
+    ocChart.setGraph2Max(graph2)
 
-    chart.data.datasets[1].data = ocChart.data.graph2.map(v => {
-      if (v === null) return v
-      return v ? ocChart.graph2Max - v + 1 : 0
-    })
-
-    chart.options!.scales!.temperatureChart!.max = ocChart.graph2Max
-    chart.options!.scales!.temperatureChart!.min = 0
+    const graph2Reverse = ocChart.getReverseGraph2(graph2)
+    const { dataMin, dataMax, stepSize } = getRankingBarLabelRange(ocChart, graph2Reverse)
+    
+    chart.data.datasets[1].data = ocChart.getReverseGraph2(ocChart.data.graph2)
+    
+    chart.options!.scales!.temperatureChart!.min = dataMin
+    chart.options!.scales!.temperatureChart!.max = dataMax;
+    (chart.options!.scales!.temperatureChart!.ticks as any).stepSize = stepSize
   }
 
   return [min, max]
@@ -56,7 +59,7 @@ const getOnZoomComplete = (ocChart: OpenChatChart) => ({ chart }: { chart: Chart
     ocChart.zoomWeekday = 0
   }
 
-  chart.update()
+  chart.update('zoom')
 }
 
 export default function getZoomOption(ocChart: OpenChatChart) {
@@ -69,7 +72,7 @@ export default function getZoomOption(ocChart: OpenChatChart) {
       mode: 'x',
       onPanComplete({ chart }: { chart: ChartJS }) {
         onZoomLabelRange(chart, ocChart)
-        chart.update()
+        chart.update('zoom')
       },
     },
     zoom: {

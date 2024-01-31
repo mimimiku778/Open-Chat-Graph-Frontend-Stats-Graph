@@ -76,10 +76,15 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     return this.chart !== null
   }
 
-  private createChart() {
+  setSize() {
     this.innerWidth = window.innerWidth
-    this.isPC = this.innerWidth >= 600
-    this.isMiniMobile = this.innerWidth <= 360
+    this.isPC = this.innerWidth >= 512
+    this.isMiniMobile = this.innerWidth < 360
+  }
+
+  private createChart() {
+    this.setSize()
+    this.isMiniMobile = this.innerWidth < 360
     this.isZooming = false
     this.zoomWeekday = 0
 
@@ -92,9 +97,20 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
       totalCount: li ? this.initData.totalCount.slice(li * -1) : this.initData.totalCount,
     }
 
-    this.graph2Max = this.data.graph2.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
+    this.setGraph2Max(this.data.graph2)
 
     return openChatChartJSFactory(this)
+  }
+
+  setGraph2Max(graph2: (number | null)[]) {
+    this.graph2Max = graph2.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
+  }
+
+  getReverseGraph2(graph2: (number | null)[]) {
+    return graph2.map(v => {
+      if (v === null) return v
+      return v ? this.graph2Max + 1 - v : 0
+    })
   }
 
   getDate(limit: ChartLimit): (string | string[])[] {

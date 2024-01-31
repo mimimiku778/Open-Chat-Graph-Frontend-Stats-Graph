@@ -5,28 +5,15 @@ import ChartLimitBtns from './components/ChartLimitBtns'
 import ToggleButtons from './components/ToggleButtons'
 
 export function App() {
-  const canvas = useRef<HTMLCanvasElement | null>(null)
-  const chart = useRef<OpenChatChart | null>(null)
+  const canvas = useRef<HTMLCanvasElement>(document.getElementById('chart-preact-canvas') as HTMLCanvasElement)
+  const chart = useRef<OpenChatChart>(new OpenChatChart(canvas.current))
 
   useEffect(() => {
-    chart.current = new OpenChatChart(canvas.current!)
-    fetchUpdate(chart.current, 'rising', true, false)
+    fetchUpdate(chart.current, 'ranking', false, false)
   }, [])
 
   return (
-    <div style="width: 100%">
-      <div
-        style="
-        width: 100%;
-        margin: 0 auto;
-        padding: 0;
-        aspect-ratio: 1.8 / 1;
-        user-select: none;
-        -webkit-user-select: none;
-        "
-      >
-        <canvas ref={canvas}></canvas>
-      </div>
+    <div>
       <ChartLimitBtns chart={chart} />
       <ToggleButtons chart={chart} />
     </div>

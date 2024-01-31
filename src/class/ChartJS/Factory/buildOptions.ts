@@ -1,10 +1,15 @@
 import { ChartConfiguration, Chart as ChartJS } from 'chart.js/auto'
 import OpenChatChart from "../../OpenChatChart"
 import horizontalLabelFontColorCallback from "../Callback/horizontalLabelFontColorCallback"
+import getVerticalLabelRange from '../Util/getVerticalLabelRange'
+import getRankingBarLabelRange from '../Util/getRankingBarLabelRange'
 
-const aspectRatio = (ocChart: OpenChatChart) => (ocChart.innerWidth <= 375 ? 1.2 / 1 : ocChart.isPC ? 1.7 / 1 : 1.2 / 1)
+const aspectRatio = (ocChart: OpenChatChart) => {
+  ocChart.setSize()
+  return ocChart.isMiniMobile ? 1 / 1 : ocChart.isPC ? 1.7 / 1 : 1.2 / 1
+}
 
-export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: labelRangeLine, plugins: any)
+export default function buildOptions(ocChart: OpenChatChart, plugins: any)
   : ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] {
   const limit = ocChart.limit
   const isWeekly = limit === 8
@@ -30,7 +35,9 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
   const paddingY = isWeekly ? 0 : 5
   const displayY = !isWeekly
 
-  return {
+  const labelRangeLine = getVerticalLabelRange(ocChart, ocChart.data.graph1)
+
+  const options: ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] = {
     animation: {
       duration: 900,
     },
@@ -76,27 +83,36 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
           },
         },
       },
-      temperatureChart: {
-        position: 'right',
-        max: ocChart.graph2Max,
-        display: displayY,
-        grid: {
-          display: false,
-        },
-        ticks: {
-          callback: (v: any) => {
-            if (v === null) return ''
-            const value = ocChart.graph2Max - v + 1
-            return value <= ocChart.graph2Max ? `${value} 位` : ''
-          },
-          precision: 0,
-          autoSkip: true,
-          font: {
-            size: dataFontSize,
-          },
-        },
-      },
     },
     plugins
   }
+
+  if (ocChart.data.graph2.length) {
+    const labelRangeBar = getRankingBarLabelRange(ocChart, ocChart.getReverseGraph2(ocChart.data.graph2))
+
+    options.scales!.temperatureChart! = {
+      position: 'right',
+      min: labelRangeBar.dataMin,
+      max: labelRangeBar.dataMax,
+      display: displayY,
+      grid: {
+        display: false,
+      },
+      ticks: {
+        callback: (v: any) => {
+          if (v === null) return ''
+          const value = ocChart.graph2Max - v + 1
+          return value <= ocChart.graph2Max ? `${Math.ceil(value)} 位` : ''
+        },
+        stepSize: labelRangeBar.stepSize,
+        precision: 0,
+        autoSkip: true,
+        font: {
+          size: dataFontSize,
+        },
+      },
+    }
+  }
+
+  return options
 }

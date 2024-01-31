@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,36 @@
     <title>Vite + Preact + TS</title>
   </head>
   <body>
-    <div id="app" data-oc-id="190" data-category="団体"></div>
+    <style>
+      .chart-canvas-box {
+        aspect-ratio: 1.7 / 1;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      @media screen and (max-width: 359px) {
+        .chart-canvas-box {
+          margin: 0 -1rem;
+          width: calc(100% + 2rem);
+          aspect-ratio: 1 / 1;
+        }
+      }
+
+      @media screen and (max-width: 511px) {
+        .chart-canvas-box {
+          aspect-ratio: 1.2 / 1;
+        }
+      }
+    </style>
+    <div style="margin: 0 1rem;">
+      <div class="chart-canvas-box">
+        <canvas id="chart-preact-canvas"></canvas>
+      </div>
+    </div>
+    <div id="app" data-oc-id="12851" data-category="芸能人・有名人"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

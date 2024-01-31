@@ -31,9 +31,11 @@ export default function getVerticalLabelRange(ocChart: OpenChatChart, data: (num
     minNum = Math.ceil(minNum / 10) * 10
     dataDiffMax = Math.floor(dataDiffMax / 10) * 10
     dataDiffMin = Math.ceil(dataDiffMin / 10) * 10
-    if (trueDiff >= 100) stepSize = 10
   }
 
+  if (trueDiff >= 100) stepSize = 10
+  if (trueDiff >= 1000) stepSize = 100
+  
   let dataMin = 0
   if (ocChart.limit === 8) {
     dataMin = minNum - dataDiff8

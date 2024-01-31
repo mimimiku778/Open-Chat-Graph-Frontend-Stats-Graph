@@ -39,10 +39,7 @@ export default function buildData(ocChart: OpenChatChart) {
     data.datasets.push({
       type: 'bar',
       label: `${ocChart.option.label2} - ${ocChart.option.category}`,
-      data: ocChart.data.graph2.map(v => {
-        if (v === null) return v
-        return v ? ocChart.graph2Max - v + 1 : 0
-      }),
+      data: ocChart.getReverseGraph2(ocChart.data.graph2),
       //backgroundColor: 'rgb(199,3,117, 0.2)',
       backgroundColor: 'rgba(3, 117, 199, 0.2)',
       datalabels: {

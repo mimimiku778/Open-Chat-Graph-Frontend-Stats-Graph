@@ -19,9 +19,9 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
 
     const graph2Reverse = ocChart.getReverseGraph2(graph2)
     const { dataMin, dataMax, stepSize } = getRankingBarLabelRange(ocChart, graph2Reverse)
-    
+
     chart.data.datasets[1].data = ocChart.getReverseGraph2(ocChart.data.graph2)
-    
+
     chart.options!.scales!.temperatureChart!.min = dataMin
     chart.options!.scales!.temperatureChart!.max = dataMax;
     (chart.options!.scales!.temperatureChart!.ticks as any).stepSize = stepSize
@@ -30,15 +30,18 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
   return [min, max]
 }
 
-const hideTooltips = (ocChart: OpenChatChart, max: number) => {
-  if (!ocChart.isPC && max + 1 === ocChart.data.date.length && ocChart.isZooming) {
+const toggleVerticalLineTooltipIntersect = (ocChart: OpenChatChart, toggle: boolean) => {
+  ocChart.chart.options.plugins!.tooltip!.intersect = toggle;
+  (ocChart.chart.options.plugins! as any).verticalLinePlugin = toggle ? hideVerticalLinePluginOption : defaultVerticalLinePluginOption;
+}
+
+const hideTooltipsZoomingMobile = (ocChart: OpenChatChart, max: number) => {
+  if (max + 1 === ocChart.data.date.length && ocChart.isZooming) {
     ocChart.isZooming = false
-    ocChart.chart.options.plugins!.tooltip!.intersect = false;
-    (ocChart.chart.options.plugins! as any).verticalLinePlugin = defaultVerticalLinePluginOption
-  } else if (!ocChart.isPC && !ocChart.isZooming) {
+    toggleVerticalLineTooltipIntersect(ocChart, false)
+  } else if (!ocChart.isZooming) {
     ocChart.isZooming = true
-    ocChart.chart.options.plugins!.tooltip!.intersect = true;
-    (ocChart.chart.options.plugins! as any).verticalLinePlugin = hideVerticalLinePluginOption
+    toggleVerticalLineTooltipIntersect(ocChart, true)
   }
 }
 
@@ -46,14 +49,21 @@ const getOnZoomComplete = (ocChart: OpenChatChart) => ({ chart }: { chart: Chart
   const [min, max] = onZoomLabelRange(chart, ocChart)
   const range = max - min + 1
 
-  hideTooltips(ocChart, max)
+  // スマホかつ順位データがある場合
+  !ocChart.isPC && ocChart.data.graph2.length && hideTooltipsZoomingMobile(ocChart, max)
 
   if (range <= 8 && ocChart.zoomWeekday !== 2) {
     chart.data.labels = ocChart.getDate(8)
     ocChart.zoomWeekday = 2
+
+    // PCまたは順位データが空の場合
+    ocChart.isPC || !ocChart.data.graph2.length && toggleVerticalLineTooltipIntersect(ocChart, true)
   } else if (range > 8 && range < 32 && ocChart.zoomWeekday !== 1) {
     chart.data.labels = ocChart.getDate(31)
     ocChart.zoomWeekday = 1
+
+    // PCまたは順位データが空の場合
+    ocChart.isPC || !ocChart.data.graph2.length && toggleVerticalLineTooltipIntersect(ocChart, false)
   } else if (range >= 32 && ocChart.zoomWeekday !== 0) {
     chart.data.labels = ocChart.data.date
     ocChart.zoomWeekday = 0

@@ -23,7 +23,8 @@ export default class ModelFactory {
     return {
       label1: '',
       label2: '',
-      category: ''
+      category: '',
+      isRising: false
     }
   }
 }

@@ -20,6 +20,7 @@ type OpenChatChartOption = {
   label1: string
   label2: string
   category: string
+  isRising: boolean
 }
 
 type labelRangeLine = {

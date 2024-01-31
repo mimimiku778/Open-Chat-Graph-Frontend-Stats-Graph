@@ -14,12 +14,11 @@ const chips1: [string, ToggleChart][] = [
 
 const fetchChart = (chart: OpenChatChart) => {
   const isAll = cateSignal.value === 'all'
-  const isRising = chipsSignal.value === 'rising'
 
   if (!chipsSignal.value) {
     fetchInit(chart)
   } else {
-    fetchUpdate(chart, `${chipsSignal.value}${isAll ? '_all' : ''}`, isRising, isAll)
+    fetchUpdate(chart, `${chipsSignal.value}${isAll ? '_all' : ''}`, isAll)
   }
 }
 

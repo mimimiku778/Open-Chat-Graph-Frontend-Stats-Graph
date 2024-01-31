@@ -16,6 +16,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
     verticalLinePlugin: limit === 8 ? hideVerticalLinePluginOption : undefined,
     legend: {
       display: !!ocChart.data.graph2.length,
+      onClick: () => false
     },
     tooltip:
     {
@@ -27,7 +28,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       bodyFont: {
         size: dataFontSize,
       },
-      enabled: true,
+      enabled: limit === 8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
       displayColors: false,
       callbacks: {
         beforeBody: (tooltipItem: any) => {

@@ -3,14 +3,14 @@ import OpenChatChart from "../../OpenChatChart"
 const incrementIfOdd = (n: number) => (n % 2 !== 0 ? n + 1 : n)
 const decrementIfOdd = (n: number) => (n % 2 !== 0 ? n - 1 : n)
 
-export default function getVerticalLabelRange(ocChart: OpenChatChart, data: number[]): labelRangeLine {
+export default function getVerticalLabelRange(ocChart: OpenChatChart, data: (number | null)[]): labelRangeLine {
   const diffMaxConst = ocChart.isPC ? 0.25 : 0.31
   const diffMinConst = ocChart.isPC ? 0.1 : 0.15
   const diff8Const = ocChart.isPC ? 0.25 : 0.5
 
   let stepSize = 2
-  let maxNum = incrementIfOdd(data.reduce((a, b) => Math.max(a, b), -Infinity))
-  let minNum = decrementIfOdd(data.reduce((a, b) => Math.min(a, b), Infinity))
+  let maxNum = incrementIfOdd(data.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number)
+  let minNum = decrementIfOdd(data.reduce((a, b) => Math.min(a === null ? 0 : a, b === null ? 0 : b), Infinity) as number)
 
   let dataDiffMax = incrementIfOdd(Math.ceil((maxNum - minNum) * diffMaxConst))
   let dataDiffMin = decrementIfOdd(Math.ceil((maxNum - minNum) * diffMinConst))

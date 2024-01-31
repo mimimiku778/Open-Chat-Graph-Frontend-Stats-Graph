@@ -19,14 +19,12 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
   zoomWeekday: 0 | 1 | 2 = 0
   isMiniMobile = false
   graph2Max = 0
+  isZooming = false
 
-  constructor() {
+  constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
     ChartJS.register(ChartDataLabels)
     ChartJS.register(verticalLinePlugin)
     ChartJS.register(zoomPlugin)
-  }
-
-  init(canvas: HTMLCanvasElement, defaultLimit: ChartLimit) {
     this.canvas = canvas
     this.limit = defaultLimit
   }
@@ -82,15 +80,19 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     this.innerWidth = window.innerWidth
     this.isPC = this.innerWidth >= 600
     this.isMiniMobile = this.innerWidth <= 360
+    this.isZooming = false
+    this.zoomWeekday = 0
 
     const li = this.limit
     this.data = {
-      date: li ? this.getDate(this.limit) : this.initData.date,
+      date: this.getDate(this.limit),
       graph1: li ? this.initData.graph1.slice(li * -1) : this.initData.graph1,
       graph2: li ? this.initData.graph2.slice(li * -1) : this.initData.graph2,
+      time: li ? this.initData.time.slice(li * -1) : this.initData.time,
+      totalCount: li ? this.initData.totalCount.slice(li * -1) : this.initData.totalCount,
     }
 
-    this.graph2Max = this.data.graph2.reduce((a, b) => Math.max(a, b), -Infinity)
+    this.graph2Max = this.data.graph2.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
 
     return openChatChartJSFactory(this)
   }
@@ -99,9 +101,9 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     const data = this.initData.date.slice(this.limit * -1)
 
     if (limit === 8) {
-      return formatDates(data)
+      return formatDates(data, limit)
     } else {
-      return formatDates(data, true)
+      return formatDates(data, limit)
     }
   }
 }

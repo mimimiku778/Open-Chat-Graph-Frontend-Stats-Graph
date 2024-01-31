@@ -1,27 +1,26 @@
-import { TooltipItem } from 'chart.js/auto'
 import OpenChatChart from "../../OpenChatChart"
 import { hideVerticalLinePluginOption } from "../Plugin/verticalLinePlugin"
 import getZoomOption from "../Plugin/zoomOptions"
+import getTooltipLabelCallback from '../Callback/getTooltipLabelCallback'
 
 export default function buildPlugin(ocChart: OpenChatChart): any {
   const limit = ocChart.limit
   const ticksFontSizeMobile = ocChart.isMiniMobile ? 11 : 12
   const dataFontSize = ocChart.isPC ? 13 : ticksFontSizeMobile
-  const verticalLine = limit === 31
 
   const datalabelFontSize =
     limit === 8 ? (ocChart.isPC ? 13 : ticksFontSizeMobile) : limit === 31 ? 10.5 : ocChart.isPC ? 11 : 10.5
 
   return {
     zoom: getZoomOption(ocChart),
-    verticalLinePlugin: ocChart.isPC || verticalLine ? undefined : hideVerticalLinePluginOption,
+    verticalLinePlugin: limit === 8 ? hideVerticalLinePluginOption : undefined,
     legend: {
-      display: true,
+      display: !!ocChart.data.graph2.length,
     },
     tooltip:
     {
       usePointStyle: true,
-      intersect: ocChart.isPC ? true : !verticalLine,
+      intersect: limit === 8,
       titleFont: {
         size: dataFontSize,
       },
@@ -29,18 +28,12 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
         size: dataFontSize,
       },
       enabled: true,
-      mode: 'nearest',
       displayColors: false,
-
       callbacks: {
-        label: (tooltipItem: TooltipItem<"bar" | "line">) => {
-          if (tooltipItem.datasetIndex === 1) {
-            const value = tooltipItem.raw ? ocChart.graph2Max - (tooltipItem.raw as number) + 1 : '圏外'
-            return [ocChart.option.label2, `${value} 位`]
-          }
-
-          return [ocChart.option.label1, `${tooltipItem.formattedValue} 人`]
-        }
+        beforeBody: (tooltipItem: any) => {
+          if (!tooltipItem.raw) return ''
+        },
+        label: getTooltipLabelCallback(ocChart)
       },
     },
     datalabels: {

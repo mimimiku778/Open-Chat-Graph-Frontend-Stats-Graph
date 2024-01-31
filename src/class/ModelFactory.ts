@@ -4,6 +4,8 @@ export default class ModelFactory {
       date: [],
       graph1: [],
       graph2: [],
+      time: [],
+      totalCount: [],
     }
   }
 
@@ -12,6 +14,8 @@ export default class ModelFactory {
       date: [],
       graph1: [],
       graph2: [],
+      time: [],
+      totalCount: [],
     }
   }
 
@@ -19,6 +23,7 @@ export default class ModelFactory {
     return {
       label1: '',
       label2: '',
+      category: ''
     }
   }
 }

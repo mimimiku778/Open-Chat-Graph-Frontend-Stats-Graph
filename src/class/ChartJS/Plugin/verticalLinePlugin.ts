@@ -6,6 +6,13 @@ export const hideVerticalLinePluginOption =
   setLineDash: [0, 0],
 }
 
+export const defaultVerticalLinePluginOption = {
+  x: NaN,
+  color: 'black',
+  lineWidth: 1,
+  setLineDash: [6, 6],
+}
+
 export const verticalLinePlugin = {
   id: 'verticalLinePlugin',
   beforeEvent: (chart: ChartJS, args: any, options: any) => {

@@ -4,9 +4,8 @@ import getPointRadius from '../Callback/getPointRadius';
 import getDataLabelLine from '../Callback/getDataLabelLine';
 import getDataLabelBarCallback from '../Callback/getDataLabelBar';
 
-export default function buildData(ocChart: OpenChatChart)
-  : ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] {
-  return {
+export default function buildData(ocChart: OpenChatChart) {
+  const data: ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] = {
     labels: ocChart.data.date,
     datasets: [
       {
@@ -33,20 +32,31 @@ export default function buildData(ocChart: OpenChatChart)
         },
         yAxisID: 'rainChart',
       },
-      {
-        type: 'bar',
-        label: ocChart.option.label2,
-        data: ocChart.data.graph2.map(v => v ? ocChart.graph2Max - v + 1 : 0),
-        //backgroundColor: 'rgb(199,3,117, 0.2)',
-        backgroundColor: 'rgba(3, 117, 199, 0.2)',
-        datalabels: {
-          align: 'start',
-          anchor: 'start',
-          formatter: v => v ? ocChart.graph2Max - v + 1 : '圏外',
-          display: getDataLabelBarCallback
-        },
-        yAxisID: 'temperatureChart',
-      },
     ],
   }
+
+  if (ocChart.data.graph2.length) {
+    data.datasets.push({
+      type: 'bar',
+      label: `${ocChart.option.label2} - ${ocChart.option.category}`,
+      data: ocChart.data.graph2.map(v => {
+        if (v === null) return v
+        return v ? ocChart.graph2Max - v + 1 : 0
+      }),
+      //backgroundColor: 'rgb(199,3,117, 0.2)',
+      backgroundColor: 'rgba(3, 117, 199, 0.2)',
+      datalabels: {
+        align: 'start',
+        anchor: 'start',
+        formatter: v => {
+          if (v === null) return ''
+          return v ? ocChart.graph2Max - v + 1 : '圏外'
+        },
+        display: getDataLabelBarCallback
+      },
+      yAxisID: 'temperatureChart',
+    })
+  }
+
+  return data
 }

@@ -1,6 +1,5 @@
 interface ChartFactory<T> {
-  init(canvas: HTMLCanvasElement, defaultLimit: ChartLimit): void
-  render(data: ChartArgs, option: T): void
+  render(data: ChartArgs, option: OpenChatChartOption): void
   updateData(data: ChartArgs, option: T): void
   update(limit: ChartLimit): boolean
   destroy(): void

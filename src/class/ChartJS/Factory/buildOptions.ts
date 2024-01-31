@@ -64,7 +64,8 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
         display: displayY,
         ticks: {
           callback: (v: any) => {
-            return `${v}人`
+            if (v === null) return ''
+            return v
           },
           stepSize: labelRangeLine.stepSize,
           precision: 0,
@@ -84,8 +85,9 @@ export default function buildOptions(ocChart: OpenChatChart, labelRangeLine: lab
         },
         ticks: {
           callback: (v: any) => {
+            if (v === null) return ''
             const value = ocChart.graph2Max - v + 1
-            return value <= ocChart.graph2Max ? `${value}位` : ''
+            return value <= ocChart.graph2Max ? `${value} 位` : ''
           },
           precision: 0,
           autoSkip: true,

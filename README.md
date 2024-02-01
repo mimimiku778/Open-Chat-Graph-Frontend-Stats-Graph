@@ -1,5 +1,7 @@
 Preact + Vite  
 Chart.js  
+chartjs-plugin-zoom  
+chartjs-plugin-datalabels  
 
 PHPのページに埋め込んでいます
 

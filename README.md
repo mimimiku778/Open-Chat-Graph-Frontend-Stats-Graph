@@ -1,4 +1,6 @@
 Preact + Vite  
+Chart.js  
+
 PHPのページに埋め込んでいます
 
 サンプル  

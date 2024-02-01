@@ -1,4 +1,4 @@
-Preact + Vite + TypeScript  
+Preact + Vite  
 PHPのページに埋め込んでいます
 
 サンプル  

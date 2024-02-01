@@ -30,46 +30,35 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
   return [min, max]
 }
 
+const resetTooltip = (ocChart: OpenChatChart) => {
+  ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
+}
+
 const toggleVerticalLineTooltipIntersect = (ocChart: OpenChatChart, toggle: boolean) => {
   ocChart.chart.options.plugins!.tooltip!.intersect = toggle;
-  (ocChart.chart.options.plugins! as any).verticalLinePlugin = toggle ? hideVerticalLinePluginOption : defaultVerticalLinePluginOption;
+  (ocChart.chart.options.plugins! as any).verticalLinePlugin = toggle ? hideVerticalLinePluginOption : defaultVerticalLinePluginOption
 }
 
-const hideTooltipsZoomingMobile = (ocChart: OpenChatChart, max: number) => {
-  if (max + 1 === ocChart.data.date.length && ocChart.isZooming) {
-    ocChart.isZooming = false
-    toggleVerticalLineTooltipIntersect(ocChart, false)
-  } else if (!ocChart.isZooming) {
-    ocChart.isZooming = true
-    toggleVerticalLineTooltipIntersect(ocChart, true)
-  }
-}
-
-const getOnZoomComplete = (ocChart: OpenChatChart) => ({ chart }: { chart: ChartJS }) => {
-  const [min, max] = onZoomLabelRange(chart, ocChart)
+const getOnZoomComplete = (ocChart: OpenChatChart) => {
+  const [min, max] = onZoomLabelRange(ocChart.chart, ocChart)
   const range = max - min + 1
 
-  // スマホかつ順位データがある場合
-  !ocChart.isPC && ocChart.data.graph2.length && hideTooltipsZoomingMobile(ocChart, max)
-
   if (range <= 8 && ocChart.zoomWeekday !== 2) {
-    chart.data.labels = ocChart.getDate(8)
+    ocChart.chart.data.labels = ocChart.getDate(8)
     ocChart.zoomWeekday = 2
 
-    // PCまたは順位データが空の場合
-    ocChart.isPC || !ocChart.data.graph2.length && toggleVerticalLineTooltipIntersect(ocChart, true)
+    toggleVerticalLineTooltipIntersect(ocChart, true)
   } else if (range > 8 && range < 32 && ocChart.zoomWeekday !== 1) {
-    chart.data.labels = ocChart.getDate(31)
+    ocChart.chart.data.labels = ocChart.getDate(31)
     ocChart.zoomWeekday = 1
 
-    // PCまたは順位データが空の場合
-    ocChart.isPC || !ocChart.data.graph2.length && toggleVerticalLineTooltipIntersect(ocChart, false)
+    toggleVerticalLineTooltipIntersect(ocChart, false)
   } else if (range >= 32 && ocChart.zoomWeekday !== 0) {
-    chart.data.labels = ocChart.data.date
+    ocChart.chart.data.labels = ocChart.data.date
     ocChart.zoomWeekday = 0
-  }
 
-  chart.update('zoom')
+    toggleVerticalLineTooltipIntersect(ocChart, false)
+  }
 }
 
 export default function getZoomOption(ocChart: OpenChatChart) {
@@ -80,9 +69,13 @@ export default function getZoomOption(ocChart: OpenChatChart) {
     pan: {
       enabled: enable,
       mode: 'x',
-      onPanComplete({ chart }: { chart: ChartJS }) {
-        onZoomLabelRange(chart, ocChart)
-        chart.update('zoom')
+      onPanStart: () => {
+        resetTooltip(ocChart)
+      },
+      onPanComplete: () => {
+        onZoomLabelRange(ocChart.chart, ocChart)
+        resetTooltip(ocChart)
+        ocChart.chart.update()
       },
     },
     zoom: {
@@ -93,8 +86,14 @@ export default function getZoomOption(ocChart: OpenChatChart) {
         enabled: enable,
       },
       mode: 'x',
-      onZoomComplete: getOnZoomComplete(ocChart),
-
+      onZoomStart: () => {
+        resetTooltip(ocChart)
+      },
+      onZoomComplete: () => {
+        getOnZoomComplete(ocChart)
+        resetTooltip(ocChart)
+        ocChart.chart.update()
+      },
     },
     limits: {
       x: { minRange: 7 },

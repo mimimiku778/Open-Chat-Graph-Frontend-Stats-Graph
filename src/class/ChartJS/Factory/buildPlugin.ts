@@ -27,7 +27,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       bodyFont: {
         size: dataFontSize,
       },
-      enabled: true,
+      enabled: limit === 8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
       displayColors: false,
       callbacks: {
         beforeBody: (tooltipItem: any) => {

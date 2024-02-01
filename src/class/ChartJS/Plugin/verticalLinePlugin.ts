@@ -21,6 +21,7 @@ export const verticalLinePlugin = {
     const elements = chart.getElementsAtEventForMode(e, 'nearest', { intersect: false }, true)
 
     if (
+      chart.tooltip!.getActiveElements().length &&
       elements.length > 0 &&
       e.x >= chartArea.left &&
       e.x <= chartArea.right &&

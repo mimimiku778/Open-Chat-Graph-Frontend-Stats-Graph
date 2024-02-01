@@ -27,6 +27,27 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     ChartJS.register(zoomPlugin)
     this.canvas = canvas
     this.limit = defaultLimit
+    this.setSize()
+    !this.isPC && this.visibilitychange()
+  }
+
+  private visibilitychange() {
+    document.addEventListener('visibilitychange', () => {
+      if (this.isZooming) {
+        return
+      }
+
+      if (document.visibilityState === 'visible') {
+        this.canvas?.getContext('2d')?.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight)
+        this.animation = false
+        this.update(this.limit)
+        this.animation = true
+      }
+
+      if (document.visibilityState === 'hidden') {
+        this.chart.destroy()
+      }
+    })
   }
 
   render(data: ChartArgs, option: OpenChatChartOption): void {
@@ -83,7 +104,6 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
   }
 
   private createChart() {
-    this.setSize()
     this.isMiniMobile = this.innerWidth < 360
     this.isZooming = false
     this.zoomWeekday = 0

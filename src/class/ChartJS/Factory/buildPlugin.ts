@@ -15,7 +15,6 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
     zoom: getZoomOption(ocChart),
     verticalLinePlugin: limit === 8 ? hideVerticalLinePluginOption : undefined,
     legend: {
-      display: !!ocChart.data.graph2.length,
       onClick: () => false
     },
     tooltip:

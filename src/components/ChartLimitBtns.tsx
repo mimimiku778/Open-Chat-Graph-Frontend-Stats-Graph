@@ -6,7 +6,13 @@ import { fetchChart } from './ToggleButtons'
 
 export const limitBtnsSignal = signal<ChartLimit | 25>(8)
 
-export default function ChartLimitBtns({ chart }: { chart: MutableRef<OpenChatChart | null> }) {
+export default function ChartLimitBtns({
+  chart,
+  hasPosition,
+}: {
+  chart: MutableRef<OpenChatChart | null>
+  hasPosition: boolean
+}) {
   const handleChange = (e: MouseEvent, limit: ChartLimit | 25) => {
     e.preventDefault()
     limitBtnsSignal.value = limit
@@ -29,7 +35,7 @@ export default function ChartLimitBtns({ chart }: { chart: MutableRef<OpenChatCh
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%' }} className="limit-btns">
       <Tabs onChange={handleChange} variant="fullWidth" value={limitBtnsSignal.value}>
-        <Tab value={25} label="最新24時間" />
+        {hasPosition && <Tab value={25} label="最新24時間" />}
         <Tab value={8} label="1週間" />
         <Tab value={31} label="1ヶ月" />
         <Tab value={0} label="全期間" />

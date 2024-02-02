@@ -57,7 +57,7 @@ export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boo
 
 export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean, setHasPosition: StateUpdater<boolean>) {
   fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then((data) => {
-    if (data.position.some(v => v !== null)) {
+    if (data.position.some(v => v !== 0 && v !== null)) {
       renderChart(chart, param, all)(data)
       setHasPosition(true)
     } else {
@@ -69,5 +69,5 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
 
 export function fetchInit(chart: OpenChatChart) {
   const path = chart.getIsHour() ? 'position_hour' : 'position'
-  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=rising_all`).then(renderMemberChart(chart))
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=ranking`).then(renderMemberChart(chart))
 }

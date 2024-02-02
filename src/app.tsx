@@ -15,7 +15,7 @@ export function App() {
 
   return (
     <div>
-      <ChartLimitBtns chart={chart} />
+      <ChartLimitBtns chart={chart} hasPosition={hasPosition} />
       {hasPosition && <ToggleButtons chart={chart} />}
     </div>
   )

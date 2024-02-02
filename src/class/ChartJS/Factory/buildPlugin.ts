@@ -30,9 +30,6 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       enabled: limit === 8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
       displayColors: false,
       callbacks: {
-        beforeBody: (tooltipItem: any) => {
-          if (!tooltipItem.raw) return ''
-        },
         label: getTooltipLabelCallback(ocChart)
       },
     },

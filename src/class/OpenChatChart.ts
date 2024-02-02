@@ -20,6 +20,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
   isMiniMobile = false
   graph2Max = 0
   isZooming = false
+  private isHour = false
 
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
     ChartJS.register(ChartDataLabels)
@@ -103,11 +104,31 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     this.isMiniMobile = this.innerWidth < 360
   }
 
+  setIsHour(isHour: boolean) {
+    this.isHour = isHour
+  }
+
+  getIsHour(): boolean {
+    return this.isHour
+  }
+
   private createChart() {
     this.isMiniMobile = this.innerWidth < 360
     this.isZooming = false
     this.zoomWeekday = 0
 
+    if (this.isHour) {
+      this.data = this.initData
+    } else {
+      this.buildData()
+    }
+
+    this.setGraph2Max(this.data.graph2)
+
+    return openChatChartJSFactory(this)
+  }
+
+  private buildData() {
     const li = this.limit
     this.data = {
       date: this.getDate(this.limit),
@@ -116,10 +137,6 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
       time: li ? this.initData.time.slice(li * -1) : this.initData.time,
       totalCount: li ? this.initData.totalCount.slice(li * -1) : this.initData.totalCount,
     }
-
-    this.setGraph2Max(this.data.graph2)
-
-    return openChatChartJSFactory(this)
   }
 
   setGraph2Max(graph2: (number | null)[]) {

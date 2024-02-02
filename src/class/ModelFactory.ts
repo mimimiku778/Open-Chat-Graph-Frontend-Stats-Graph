@@ -24,7 +24,7 @@ export default class ModelFactory {
       label1: '',
       label2: '',
       category: '',
-      isRising: false
+      isRising: false,
     }
   }
 }

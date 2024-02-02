@@ -7,12 +7,14 @@ export default function getTooltipLabelCallback(ocChart: OpenChatChart) {
       if (!tooltipItem.raw) return ''
 
       const value = ocChart.graph2Max - (tooltipItem.raw as number) + 1
-      return [
+      const tip = [
         ocChart.option.label2,
         ocChart.option.category,
         `${ocChart.data.totalCount[tooltipItem.dataIndex]} 件中 ${value} 位`,
-        `${ocChart.data.time[tooltipItem.dataIndex]} 時点`
       ]
+
+      ocChart.data.time[tooltipItem.dataIndex] && tip.push(`${ocChart.data.time[tooltipItem.dataIndex]} 時点`)
+      return tip
     }
 
     return `メンバー ${tooltipItem.formattedValue}`

@@ -19,7 +19,9 @@ const category = document.getElementById('app')?.dataset.category!
 //const BASE_URL = 'http://192.168.11.10'
 const BASE_URL = 'https://openchat-review.me'
 
-const renderChart = (chart: OpenChatChart, isRising: boolean, all: boolean) => (data: RankingPositionChart) => {
+const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean) => (data: RankingPositionChart) => {
+  const isRising = param === 'rising' || param === 'rising_all'
+
   chart.render({
     date: data.date,
     graph1: data.member,
@@ -44,19 +46,19 @@ const renderMemberChart = (chart: OpenChatChart) => (data: RankingPositionChart)
   }, {
     label1: 'メンバー数',
     label2: '',
-    category,
-    isRising: false
+    category
   })
 }
 
 export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boolean) {
-  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then(renderChart(chart, param === 'rising' || param === 'rising_all', all))
+  const path = chart.getIsHour() ? 'position_hour' : 'position'
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=${param}`).then(renderChart(chart, param, all))
 }
 
 export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean, setHasPosition: StateUpdater<boolean>) {
   fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then((data) => {
     if (data.position.some(v => v !== null)) {
-      renderChart(chart, param === 'rising' || param === 'rising_all', all)(data)
+      renderChart(chart, param, all)(data)
       setHasPosition(true)
     } else {
       renderMemberChart(chart)(data)
@@ -66,5 +68,6 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
 }
 
 export function fetchInit(chart: OpenChatChart) {
-  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=rising_all`).then(renderMemberChart(chart))
+  const path = chart.getIsHour() ? 'position_hour' : 'position'
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=rising_all`).then(renderMemberChart(chart))
 }

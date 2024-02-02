@@ -6,7 +6,7 @@ import getRankingBarLabelRange from '../Util/getRankingBarLabelRange'
 
 const aspectRatio = (ocChart: OpenChatChart) => {
   ocChart.setSize()
-  return ocChart.isMiniMobile ? 1 / 1 : ocChart.isPC ? 1.7 / 1 : 1.2 / 1
+  return ocChart.isMiniMobile ? 1.1 / 1 : ocChart.isPC ? 1.7 / 1 : 1.2 / 1
 }
 
 export default function buildOptions(ocChart: OpenChatChart, plugins: any)
@@ -86,6 +86,12 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
       },
     },
     plugins
+  }
+
+  if (ocChart.getIsHour()) {
+    options.scales!.x!.ticks!.callback = (tickValue: string | number) => {
+      return (ocChart.data.date[Number(tickValue)] as string).substring(5)
+    }
   }
 
   if (ocChart.data.graph2.length) {

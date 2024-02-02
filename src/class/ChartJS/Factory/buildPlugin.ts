@@ -1,37 +1,47 @@
 import OpenChatChart from "../../OpenChatChart"
-import { hideVerticalLinePluginOption } from "../Plugin/verticalLinePlugin"
 import getZoomOption from "../Plugin/zoomOptions"
-import getTooltipLabelCallback from '../Callback/getTooltipLabelCallback'
+import getTooltipLabelCallback from '../Plugin/getTooltipLabelCallback'
+import { ChartType, Tooltip, TooltipPositionerFunction } from "chart.js"
+import { getTooltipAndLineCallback } from "../Plugin/getTooltipAndLineCallback"
+
+declare module 'chart.js' {
+  interface TooltipPositionerMap {
+    tooltipAndLine: TooltipPositionerFunction<ChartType>;
+  }
+}
 
 export default function buildPlugin(ocChart: OpenChatChart): any {
   const limit = ocChart.limit
-  const ticksFontSizeMobile = ocChart.isMiniMobile ? 11 : 12
-  const dataFontSize = ocChart.isPC ? 13 : ticksFontSizeMobile
+  const isLimit8 = limit === 8
+
+  const tooltipFontSize = ocChart.isPC ? 12 : (ocChart.isMiniMobile ? 10.5 : 11)
 
   const datalabelFontSize =
-    limit === 8 ? (ocChart.isPC ? 13 : ticksFontSizeMobile) : limit === 31 ? 10.5 : ocChart.isPC ? 11 : 10.5
+    isLimit8 ? (ocChart.isPC ? 13 : (ocChart.isMiniMobile ? 11 : 12)) : limit === 31 ? 10.5 : (ocChart.isPC ? 11 : 10.5)
+
+  Tooltip.positioners.tooltipAndLine = getTooltipAndLineCallback(ocChart)
 
   return {
     zoom: getZoomOption(ocChart),
-    verticalLinePlugin: limit === 8 ? hideVerticalLinePluginOption : undefined,
     legend: {
       onClick: () => false
     },
     tooltip:
     {
-      usePointStyle: true,
-      intersect: limit === 8,
+      intersect: false,
       titleFont: {
-        size: dataFontSize,
+        size: tooltipFontSize,
       },
+      mode: 'index',
       bodyFont: {
-        size: dataFontSize,
+        size: tooltipFontSize,
       },
-      enabled: limit === 8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
+      enabled: isLimit8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
       displayColors: false,
       callbacks: {
         label: getTooltipLabelCallback(ocChart)
       },
+      position: 'tooltipAndLine',
     },
     datalabels: {
       borderRadius: 4,
@@ -44,3 +54,4 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
     },
   }
 }
+

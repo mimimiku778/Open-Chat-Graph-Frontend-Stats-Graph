@@ -1,8 +1,9 @@
 import { ChartConfiguration, Chart as ChartJS } from 'chart.js/auto'
 import OpenChatChart from "../../OpenChatChart"
-import horizontalLabelFontColorCallback from "../Callback/horizontalLabelFontColorCallback"
 import getVerticalLabelRange from '../Util/getVerticalLabelRange'
 import getRankingBarLabelRange from '../Util/getRankingBarLabelRange'
+import getHorizontalLabelFontColor from '../Callback/getHorizontalLabelFontColor'
+import { getHourTicksFormatterCallback } from '../Callback/getHourTicksFormatterCallback'
 
 const aspectRatio = (ocChart: OpenChatChart) => {
   ocChart.setSize()
@@ -23,8 +24,8 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
         : ticksFontSizeMobile
       : limit === 31
         ? ocChart.isPC
-          ? 11
-          : 10.5
+          ? (ocChart.getIsHour() ? 12 : 11)
+          : (ocChart.getIsHour() ? 11.5 : 10.5)
         : ocChart.isPC
           ? 13
           : 10.5
@@ -56,7 +57,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
     scales: {
       x: {
         ticks: {
-          color: horizontalLabelFontColorCallback,
+          color: getHorizontalLabelFontColor,
           padding: paddingX,
           autoSkip: true,
           maxRotation: 90,
@@ -88,10 +89,9 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
     plugins
   }
 
+  // 最新24時間の場合のticksフォーマッター
   if (ocChart.getIsHour()) {
-    options.scales!.x!.ticks!.callback = (tickValue: string | number) => {
-      return (ocChart.data.date[Number(tickValue)] as string).substring(5)
-    }
+    options.scales!.x!.ticks!.callback = getHourTicksFormatterCallback(ocChart)
   }
 
   if (ocChart.data.graph2.length) {

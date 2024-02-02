@@ -40,8 +40,7 @@ export default function buildData(ocChart: OpenChatChart) {
       type: 'bar',
       label: `${ocChart.option.label2} | ${ocChart.option.category}`,
       data: ocChart.getReverseGraph2(ocChart.data.graph2),
-      //backgroundColor: 'rgb(199,3,117, 0.2)',
-      backgroundColor: 'rgba(3, 117, 199, 0.2)',
+      backgroundColor: ocChart.option.isRising ? 'rgb(199,3,117, 0.2)' : 'rgba(3, 117, 199, 0.2)',
       datalabels: {
         align: 'start',
         anchor: 'start',

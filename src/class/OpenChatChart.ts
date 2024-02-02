@@ -1,7 +1,6 @@
 import { Chart as ChartJS } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import zoomPlugin from 'chartjs-plugin-zoom'
-import verticalLinePlugin from "./ChartJS/Plugin/verticalLinePlugin";
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
@@ -24,7 +23,6 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
     ChartJS.register(ChartDataLabels)
-    ChartJS.register(verticalLinePlugin)
     ChartJS.register(zoomPlugin)
     this.canvas = canvas
     this.limit = defaultLimit

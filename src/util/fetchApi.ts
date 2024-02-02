@@ -30,7 +30,7 @@ const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean) =
     totalCount: data.totalCount,
   }, {
     label1: 'メンバー数',
-    label2: isRising ? '公式急上昇の最高順位' : '公式ランキング順位',
+    label2: isRising ? (chart.getIsHour() ? '公式急上昇の順位' : '公式急上昇の最高順位') : '公式ランキング順位',
     category: all ? 'すべて' : category,
     isRising
   })

@@ -1,7 +1,6 @@
 import { Chart as ChartJS } from 'chart.js/auto';
 import OpenChatChart from "../../OpenChatChart";
 import getVerticalLabelRange from "../Util/getVerticalLabelRange";
-import { defaultVerticalLinePluginOption, hideVerticalLinePluginOption } from './verticalLinePlugin';
 import getRankingBarLabelRange from '../Util/getRankingBarLabelRange';
 
 const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
@@ -34,11 +33,6 @@ const resetTooltip = (ocChart: OpenChatChart) => {
   ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
 }
 
-const toggleVerticalLineTooltipIntersect = (ocChart: OpenChatChart, toggle: boolean) => {
-  ocChart.chart.options.plugins!.tooltip!.intersect = toggle;
-  (ocChart.chart.options.plugins! as any).verticalLinePlugin = toggle ? hideVerticalLinePluginOption : defaultVerticalLinePluginOption
-}
-
 const getOnZoomComplete = (ocChart: OpenChatChart) => {
   const [min, max] = onZoomLabelRange(ocChart.chart, ocChart)
   const range = max - min + 1
@@ -46,18 +40,12 @@ const getOnZoomComplete = (ocChart: OpenChatChart) => {
   if (range <= 8 && ocChart.zoomWeekday !== 2) {
     ocChart.chart.data.labels = ocChart.getDate(8)
     ocChart.zoomWeekday = 2
-
-    toggleVerticalLineTooltipIntersect(ocChart, true)
   } else if (range > 8 && range < 32 && ocChart.zoomWeekday !== 1) {
     ocChart.chart.data.labels = ocChart.getDate(31)
     ocChart.zoomWeekday = 1
-
-    toggleVerticalLineTooltipIntersect(ocChart, false)
   } else if (range >= 32 && ocChart.zoomWeekday !== 0) {
     ocChart.chart.data.labels = ocChart.data.date
     ocChart.zoomWeekday = 0
-
-    toggleVerticalLineTooltipIntersect(ocChart, false)
   }
 }
 

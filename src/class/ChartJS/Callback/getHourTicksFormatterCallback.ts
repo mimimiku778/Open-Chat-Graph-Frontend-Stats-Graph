@@ -11,7 +11,7 @@ export const getHourTicksFormatterCallback = (ocChart: OpenChatChart)
     const hour = (ocChart.data.date[Number(tickValue)] as string).substring(6);
     if (index === ticks.length - 1) return isRecentString + hour
 
-    const today = ("0" + (new Date().getDate()).toString()).slice(-2);
+    const today = (ocChart.data.date[ocChart.data.date.length - 1] as string).substring(3, 5);
     const day = (ocChart.data.date[Number(tickValue)] as string).substring(3, 5);
     if (today !== day) return isYestString + hour
 

@@ -16,6 +16,8 @@ export default function getTooltipLabelCallback(ocChart: OpenChatChart) {
     }
 
     // １周間表示時はメンバー数を非表示にする
-    return (ocChart.limit === 8 || ocChart.zoomWeekday === 2) ? '' : `メンバー ${tooltipItem.formattedValue}`
+    return (ocChart.limit === 8 || ocChart.zoomWeekday === 2) && !ocChart.data.graph2.length
+      ? ''
+      : `メンバー ${tooltipItem.formattedValue}`
   }
 }

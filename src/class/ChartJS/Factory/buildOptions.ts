@@ -39,7 +39,6 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
   const labelRangeLine = getVerticalLabelRange(ocChart, ocChart.data.graph1)
 
   const options: ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] = {
-    onClick: () => console.log(ocChart.chart.chartArea),
     animation: {
       duration: ocChart.animation ? 1000 : 0,
 

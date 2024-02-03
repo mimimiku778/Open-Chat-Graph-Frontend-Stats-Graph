@@ -40,7 +40,7 @@ export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositi
     // １周間表示時に棒グラフのデータがない場合は非表示にする
     if (
       (ocChart.limit === 8 || ocChart.zoomWeekday === 2)
-      && (ocChart.data.graph2[elements[0].index] === null || !ocChart.data.graph2.length)
+      && (!ocChart.data.graph2.length)
     ) {
       return false
     }

@@ -6,7 +6,7 @@ export default function getTooltipLabelCallback(ocChart: OpenChatChart) {
     if (tooltipItem.datasetIndex === 1) {
       if (tooltipItem.raw === null) return ''
 
-      const label = ocChart.option.label2.replace(/公式|順位/g, "")
+      const label = ocChart.option.label2.replace(/公式|の順位|順位|/g, "")
 
       if (tooltipItem.raw === 0) return `${label} 圏外`
 

@@ -4,6 +4,7 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
+import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts';
 
 export default class OpenChatChart implements ChartFactory<OpenChatChartOption> {
   chart: ChartJS = null!
@@ -57,7 +58,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     this.chart?.destroy()
     this.option = option
     this.initData = data
-    this.chart = this.createChart()
+    this.createChart()
   }
 
   updateData(data: ChartArgs, option: OpenChatChartOption): void {
@@ -77,7 +78,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
     this.chart.destroy()
     this.limit = limit
-    this.chart = this.createChart()
+    this.createChart()
     return true
   }
 
@@ -123,7 +124,8 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
     this.setGraph2Max(this.data.graph2)
 
-    return openChatChartJSFactory(this)
+    this.chart = openChatChartJSFactory(this)
+    afterOpenChatChartJSFactory(this)
   }
 
   private buildData() {

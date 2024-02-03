@@ -33,9 +33,16 @@ const resetTooltip = (ocChart: OpenChatChart) => {
   ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
 }
 
+const toggleIsZooming = (ocChart: OpenChatChart, range: number) => {
+  ocChart.isZooming = ocChart.data.date.length !== range
+  ocChart.chart.options.plugins!.zoom!.pan!.enabled = ocChart.isZooming
+}
+
 const getOnZoomComplete = (ocChart: OpenChatChart) => {
   const [min, max] = onZoomLabelRange(ocChart.chart, ocChart)
   const range = max - min + 1
+
+  toggleIsZooming(ocChart, range)
 
   if (range <= 8 && ocChart.zoomWeekday !== 2) {
     ocChart.chart.data.labels = ocChart.getDate(8)

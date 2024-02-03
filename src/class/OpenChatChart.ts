@@ -4,13 +4,13 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
-import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts';
 
-export default class OpenChatChart implements ChartFactory<OpenChatChartOption> {
+export default class OpenChatChart implements ChartFactory {
   chart: ChartJS = null!
   innerWidth = 0
   isPC = true
   animation = true
+  animationAll = true
   initData = ModelFactory.initChartArgs()
   data = ModelFactory.initChartData()
   option = ModelFactory.initOpenChatChartOption()
@@ -20,7 +20,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
   isMiniMobile = false
   graph2Max = 0
   isZooming = false
-  private isHour = false
+  private isHour: boolean | null = null
 
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
     ChartJS.register(ChartDataLabels)
@@ -39,9 +39,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
       if (document.visibilityState === 'visible') {
         this.canvas?.getContext('2d')?.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight)
-        this.animation = false
-        this.update(this.limit)
-        this.animation = true
+        this.createChart(false)
       }
 
       if (document.visibilityState === 'hidden') {
@@ -50,7 +48,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     })
   }
 
-  render(data: ChartArgs, option: OpenChatChartOption): void {
+  render(data: ChartArgs, option: OpenChatChartOption, animation: boolean): void {
     if (!this.canvas) {
       throw Error('HTMLCanvasElement is not defined')
     }
@@ -58,17 +56,7 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     this.chart?.destroy()
     this.option = option
     this.initData = data
-    this.createChart()
-  }
-
-  updateData(data: ChartArgs, option: OpenChatChartOption): void {
-    if (!this.canvas) {
-      throw Error('HTMLCanvasElement is not defined')
-    }
-
-    this.animation = false
-    this.render(data, option)
-    this.animation = true
+    this.createChart(animation)
   }
 
   update(limit: ChartLimit): boolean {
@@ -78,23 +66,10 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
     this.chart.destroy()
     this.limit = limit
-    this.createChart()
+
+    this.createChart(true)
+
     return true
-  }
-
-  getCurrentLimit(): ChartLimit {
-    return this.limit
-  }
-
-  destroy(): void {
-    this.chart?.destroy()
-    this.chart = null!
-    this.initData = ModelFactory.initChartArgs()
-    this.data = ModelFactory.initChartArgs()
-  }
-
-  isActive(): boolean {
-    return this.chart !== null
   }
 
   setSize() {
@@ -103,15 +78,16 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
     this.isMiniMobile = this.innerWidth < 360
   }
 
-  setIsHour(isHour: boolean) {
+  setIsHour(isHour: boolean | null, limit: ChartLimit | null = null) {
     this.isHour = isHour
+    if (limit !== null) this.limit = limit
   }
 
   getIsHour(): boolean {
-    return this.isHour
+    return !!this.isHour
   }
 
-  private createChart() {
+  private createChart(animation: boolean) {
     this.isMiniMobile = this.innerWidth < 360
     this.isZooming = false
     this.zoomWeekday = 0
@@ -124,8 +100,14 @@ export default class OpenChatChart implements ChartFactory<OpenChatChartOption> 
 
     this.setGraph2Max(this.data.graph2)
 
-    this.chart = openChatChartJSFactory(this)
-    afterOpenChatChartJSFactory(this)
+    if (animation) {
+      this.animation = true
+      this.chart = openChatChartJSFactory(this)
+      this.animation = false
+    } else {
+      this.animation = false
+      this.chart = openChatChartJSFactory(this)
+    }
   }
 
   private buildData() {

@@ -12,13 +12,13 @@ const chips1: [string, ToggleChart][] = [
   ['ランキング', 'ranking'],
 ]
 
-export const fetchChart = (chart: OpenChatChart) => {
+export const fetchChart = (chart: OpenChatChart, animation: boolean) => {
   const isAll = cateSignal.value === 'all'
 
   if (!chipsSignal.value) {
-    fetchInit(chart)
+    fetchInit(chart, animation)
   } else {
-    fetchUpdate(chart, `${chipsSignal.value}${isAll ? '_all' : ''}`, isAll)
+    fetchUpdate(chart, `${chipsSignal.value}${isAll ? '_all' : ''}`, isAll, animation)
   }
 }
 
@@ -28,7 +28,7 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
   const handleChip = (alignment: ToggleChart) => () => {
     chipsSignal.value = alignment
     if (!chart.current) return
-    fetchChart(chart.current)
+    fetchChart(chart.current, false)
   }
 
   const handleAlignment = (e: MouseEvent, alignment: 'cate' | 'all' | null) => {
@@ -36,7 +36,7 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
     if (!alignment) return
     cateSignal.value = alignment
     if (!chart.current) return
-    fetchChart(chart.current)
+    fetchChart(chart.current, false)
   }
 
   const sig = chipsSignal.value

@@ -1,8 +1,6 @@
-interface ChartFactory<T> {
-  render(data: ChartArgs, option: OpenChatChartOption): void
-  updateData(data: ChartArgs, option: T): void
+interface ChartFactory {
+  render(data: ChartArgs, option: OpenChatChartOption, animation: boolean): void
   update(limit: ChartLimit): boolean
-  destroy(): void
-  isActive(): boolean
-  getCurrentLimit(): ChartLimit
+  setIsHour(isHour: boolean, limit: ChartLimit): void
+  getIsHour(): boolean
 }

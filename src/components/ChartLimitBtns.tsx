@@ -19,15 +19,13 @@ export default function ChartLimitBtns({
 
     const isHour = limit === 25
     if (isHour) {
-      chart.current?.setIsHour(isHour)
-      chart.current!.limit! = 31
-      fetchChart(chart.current!)
+      chart.current?.setIsHour(isHour, 31)
+      fetchChart(chart.current!, true)
     } else if (chart.current?.getIsHour()) {
-      chart.current?.setIsHour(isHour)
-      chart.current!.limit! = limit
-      fetchChart(chart.current!)
+      chart.current?.setIsHour(isHour, limit)
+      fetchChart(chart.current!, true)
     } else {
-      chart.current?.setIsHour(isHour)
+      chart.current?.setIsHour(null)
       chart.current?.update(limit)
     }
   }

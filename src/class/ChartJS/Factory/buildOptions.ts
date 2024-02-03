@@ -40,7 +40,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
 
   const options: ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] = {
     animation: {
-      duration: ocChart.animation ? 1000 : 0,
+      duration: ocChart.animationAll ? undefined : 0,
 
     },
     layout: {

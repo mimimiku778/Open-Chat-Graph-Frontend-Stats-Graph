@@ -30,6 +30,9 @@ export default function buildData(ocChart: OpenChatChart) {
           align: 'end',
           anchor: 'end',
         },
+        animation: {
+          duration: ocChart.animation ? undefined : 0,
+        },
         yAxisID: 'rainChart',
       },
     ],

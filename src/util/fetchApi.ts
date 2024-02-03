@@ -19,7 +19,7 @@ const category = document.getElementById('app')?.dataset.category!
 //const BASE_URL = 'http://192.168.11.10'
 const BASE_URL = 'https://openchat-review.me'
 
-const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean) => (data: RankingPositionChart) => {
+const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean, animation: boolean) => (data: RankingPositionChart) => {
   const isRising = param === 'rising' || param === 'rising_all'
 
   chart.render({
@@ -35,10 +35,10 @@ const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean) =
       : (chart.getIsHour() ? '公式ランキングの順位' : '公式ランキングの最高順位'),
     category: all ? 'すべて' : category,
     isRising
-  })
+  }, animation)
 }
 
-const renderMemberChart = (chart: OpenChatChart) => (data: RankingPositionChart) => {
+const renderMemberChart = (chart: OpenChatChart, animation: boolean) => (data: RankingPositionChart) => {
   chart.render({
     date: data.date,
     graph1: data.member,
@@ -49,27 +49,27 @@ const renderMemberChart = (chart: OpenChatChart) => (data: RankingPositionChart)
     label1: 'メンバー数',
     label2: '',
     category
-  })
+  }, animation)
 }
 
-export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boolean) {
+export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boolean, animation: boolean) {
   const path = chart.getIsHour() ? 'position_hour' : 'position'
-  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=${param}`).then(renderChart(chart, param, all))
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=${param}`).then(renderChart(chart, param, all, animation))
 }
 
 export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean, setHasPosition: StateUpdater<boolean>) {
   fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then((data) => {
     if (data.position.some(v => v !== 0 && v !== null)) {
-      renderChart(chart, param, all)(data)
+      renderChart(chart, param, all, true)(data)
       setHasPosition(true)
     } else {
-      renderMemberChart(chart)(data)
+      renderMemberChart(chart, true)(data)
       setHasPosition(false)
     }
   })
 }
 
-export function fetchInit(chart: OpenChatChart) {
+export function fetchInit(chart: OpenChatChart, animation: boolean) {
   const path = chart.getIsHour() ? 'position_hour' : 'position'
-  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=ranking`).then(renderMemberChart(chart))
+  fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=ranking`).then(renderMemberChart(chart, animation))
 }

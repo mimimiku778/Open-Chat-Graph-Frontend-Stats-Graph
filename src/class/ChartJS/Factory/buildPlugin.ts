@@ -24,7 +24,6 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
   return {
     zoom: getZoomOption(ocChart),
     legend: {
-      onClick: () => false,
       labels: {
         font: {
           weight: 500

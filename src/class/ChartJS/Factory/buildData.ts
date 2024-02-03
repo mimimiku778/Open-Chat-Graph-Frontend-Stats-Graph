@@ -3,6 +3,7 @@ import OpenChatChart from "../../OpenChatChart";
 import getPointRadius from '../Callback/getPointRadius';
 import getDataLabelLine from '../Callback/getDataLabelLine';
 import getDataLabelBarCallback from '../Callback/getDataLabelBar';
+import getLineGradient from '../Callback/getLineGradient';
 
 export const lineEasing = 'easeOutQuart'
 export const barEasing = 'easeOutCirc'
@@ -16,17 +17,22 @@ export default function buildData(ocChart: OpenChatChart) {
         label: ocChart.option.label1,
         data: ocChart.data.graph1.map(v => v !== 0 ? v : null),
         pointRadius: getPointRadius,
-        fill: 'start',
+        fill: false,
         backgroundColor: 'rgba(0,0,0,0)',
-        borderColor: 'rgba(3,199,85,1)',
+        borderColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return;
+          }
+          return getLineGradient(ctx, chartArea);
+        },
         borderWidth: 3,
-        /* @ts-ignore */
-        pointColor: '#fff',
         spanGaps: true,
         pointBackgroundColor: '#fff',
-        pointStrokeColor: 'rgba(3,199,85,1)',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgba(3,199,85,1)',
+        /* @ts-ignore */
         lineTension: 0.4,
         datalabels: {
           display: getDataLabelLine,
@@ -46,7 +52,8 @@ export default function buildData(ocChart: OpenChatChart) {
       type: 'bar',
       label: `${ocChart.option.label2} | ${ocChart.option.category}`,
       data: ocChart.getReverseGraph2(ocChart.data.graph2),
-      backgroundColor: ocChart.option.isRising ? 'rgb(199,3,117, 0.2)' : 'rgba(3, 117, 199, 0.2)',
+      backgroundColor: ocChart.option.isRising ? 'rgba(235, 80, 242, 0.2)' : 'rgba(80, 119, 242, 0.2)',
+
       datalabels: {
         align: 'start',
         anchor: 'start',

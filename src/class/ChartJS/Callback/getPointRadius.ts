@@ -15,7 +15,7 @@ export default function getPointRadius(context: ScriptableContext<"line">) {
       return 0 // ポイントを非表示にする
     }
   }
-  
+
   // zoom,limit8
   if (range < 9 && index >= min && index <= max) {
     return 3

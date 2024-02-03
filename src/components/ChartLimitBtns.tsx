@@ -31,7 +31,7 @@ export default function ChartLimitBtns({
   }
 
   return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%' }} className="limit-btns">
+    <Box sx={{ borderBottom: 1, borderColor: '#efefef', width: '100%' }} className="limit-btns category-tab">
       <Tabs onChange={handleChange} variant="fullWidth" value={limitBtnsSignal.value}>
         {hasPosition && <Tab value={25} label="最新24時間" />}
         <Tab value={8} label="1週間" />

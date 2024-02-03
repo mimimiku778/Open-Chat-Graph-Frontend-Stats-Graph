@@ -46,11 +46,12 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
       spacing={1}
       alignItems="center"
       justifyContent="center"
-      m={isMiniMobile ? '1.5rem -1rem' : '1.5rem 0'}
+      m={isMiniMobile ? '-1rem' : '0'}
       gap={isMiniMobile ? '2px' : '1rem'}
+      sx={{ borderBottom: 1, borderColor: '#efefef', pb:'1.5rem', pt:'1.625rem'}}
     >
       <Stack direction="row" spacing={1} alignItems="center">
-        <ToggleButtonGroup color="primary" value={cateSignal.value} exclusive onChange={handleAlignment} size="small">
+        <ToggleButtonGroup value={cateSignal.value} exclusive onChange={handleAlignment} size="small">
           <ToggleButton value="all">
             <Typography variant="caption">すべて</Typography>
           </ToggleButton>
@@ -62,10 +63,9 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
       <Stack direction="row" spacing={1} alignItems="center">
         {chips1.map((chip) => (
           <Chip
+            className={`openchat-item-header-chip graph ${sig === chip[1] ? 'selected' : ''}`}
             label={chip[0]}
-            variant={sig === chip[1] ? undefined : 'outlined'}
             onClick={handleChip(sig === chip[1] ? '' : chip[1])}
-            color="primary"
             size={isMiniMobile ? 'small' : 'medium'}
           />
         ))}

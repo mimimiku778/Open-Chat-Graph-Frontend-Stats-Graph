@@ -9,13 +9,14 @@ export default function getPointRadius(context: ScriptableContext<"line">) {
 
   const contextLen = context.dataset.data.length
   if (context.chart.data.labels?.length !== contextLen) {
-    if (index === 0 || index === contextLen - 1) {
+    if (index === contextLen - 1) {
       return 3 // ポイントの半径を設定
     } else {
       return 0 // ポイントを非表示にする
     }
   }
-
+  
+  // zoom,limit8
   if (range < 9 && index >= min && index <= max) {
     return 3
   }

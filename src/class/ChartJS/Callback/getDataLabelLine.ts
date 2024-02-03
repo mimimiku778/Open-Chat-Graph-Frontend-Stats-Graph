@@ -9,16 +9,16 @@ export default function getDataLabelLine(context: Context) {
 
   const contextLen = context.dataset.data.length
   if (context.chart.data.labels?.length !== contextLen) {
-    if (index === 0 || index === contextLen - 1) {
+    if (index === contextLen - 1) {
       return 'auto'
     } else {
       return false
     }
   }
 
-  // 最初と最後のデータポイントのみにラベルを表示する
+  // zoom,limit8
   if (range < 9 && index >= min && index <= max) {
-    return 'auto'
+    return true
   }
 
   if (index === min || index === max) {

@@ -4,6 +4,9 @@ import getPointRadius from '../Callback/getPointRadius';
 import getDataLabelLine from '../Callback/getDataLabelLine';
 import getDataLabelBarCallback from '../Callback/getDataLabelBar';
 
+export const lineEasing = 'easeOutQuart'
+export const barEasing = 'easeOutCirc'
+
 export default function buildData(ocChart: OpenChatChart) {
   const data: ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] = {
     labels: ocChart.data.date,

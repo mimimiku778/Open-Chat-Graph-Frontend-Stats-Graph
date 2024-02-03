@@ -35,7 +35,7 @@ const resetTooltip = (ocChart: OpenChatChart) => {
 
 const toggleIsZooming = (ocChart: OpenChatChart, range: number) => {
   ocChart.isZooming = ocChart.data.date.length !== range
-  ocChart.chart.options.plugins!.zoom!.pan!.enabled = ocChart.isZooming
+  ocChart.chart.options.plugins!.zoom!.pan!.enabled = ocChart.isZooming;
 }
 
 const getOnZoomComplete = (ocChart: OpenChatChart) => {

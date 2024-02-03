@@ -4,6 +4,7 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
+import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts';
 
 export default class OpenChatChart implements ChartFactory {
   chart: ChartJS = null!
@@ -38,11 +39,21 @@ export default class OpenChatChart implements ChartFactory {
       }
 
       if (document.visibilityState === 'visible') {
+        if (!this.chart) {
+          return false
+        }
+
         this.canvas?.getContext('2d')?.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight)
+        this.animationAll = false
         this.createChart(false)
+        this.animationAll = true
       }
 
       if (document.visibilityState === 'hidden') {
+        if (!this.chart) {
+          return false
+        }
+
         this.chart.destroy()
       }
     })
@@ -108,6 +119,8 @@ export default class OpenChatChart implements ChartFactory {
       this.animation = false
       this.chart = openChatChartJSFactory(this)
     }
+
+    afterOpenChatChartJSFactory(this)
   }
 
   private buildData() {

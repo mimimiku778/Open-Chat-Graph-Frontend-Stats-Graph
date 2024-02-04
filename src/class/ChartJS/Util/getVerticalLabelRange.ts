@@ -10,8 +10,10 @@ export default function getVerticalLabelRange(ocChart: OpenChatChart, data: (num
 
   let stepSize = 2
   let maxNum = incrementIfOdd(data.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number)
-  let minNum = decrementIfOdd(data.reduce((a, b) => Math.min(a === null ? 0 : a, b === null ? 0 : b), Infinity) as number)
 
+  const minData = data.filter(v => v !== null && v !== 0) as number[]
+  let minNum = decrementIfOdd(minData.reduce((a, b) => Math.min(a, b), Infinity) as number)
+  
   let dataDiffMax = incrementIfOdd(Math.ceil((maxNum - minNum) * diffMaxConst))
   let dataDiffMin = decrementIfOdd(Math.ceil((maxNum - minNum) * diffMinConst))
   let dataDiff8 = decrementIfOdd(Math.ceil(dataDiffMax * diff8Const))
@@ -35,7 +37,7 @@ export default function getVerticalLabelRange(ocChart: OpenChatChart, data: (num
 
   if (trueDiff >= 100) stepSize = 10
   if (trueDiff >= 1000) stepSize = 100
-  
+
   let dataMin = 0
   if (ocChart.limit === 8) {
     dataMin = minNum - dataDiff8

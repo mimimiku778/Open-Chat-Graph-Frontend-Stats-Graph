@@ -65,7 +65,7 @@ export default function buildData(ocChart: OpenChatChart) {
         return getLineGradientBar(ctx, chartArea);
       },
       barPercentage: ocChart.limit === 8 ? 0.77 : 0.9,
-      borderRadius: 4,
+      borderRadius: ocChart.limit === 8 || ocChart.data.date.length < 10 ? 4 : 2,
       datalabels: {
         align: 'start',
         anchor: 'start',

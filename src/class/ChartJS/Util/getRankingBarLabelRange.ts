@@ -9,7 +9,7 @@ export default function getRankingBarLabelRange(ocChart: OpenChatChart, data: (n
   let stepSize = 2
   const realMax = data.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
   const realMin = data.reduce((a, b) => Math.min(a === null ? 0 : a, b === null ? 0 : b), Infinity) as number
-  let maxNum = incrementIfOdd(realMax)
+  let maxNum = realMax
   let minNum = decrementIfOdd(realMin)
 
   let dataDiffMax = incrementIfOdd(Math.ceil((maxNum - minNum)) * diffMaxConst)

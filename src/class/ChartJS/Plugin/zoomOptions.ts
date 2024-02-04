@@ -30,6 +30,7 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
 }
 
 const resetTooltip = (ocChart: OpenChatChart) => {
+  //console.log(ocChart.chart.tooltip!.opacity)
   ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
 }
 

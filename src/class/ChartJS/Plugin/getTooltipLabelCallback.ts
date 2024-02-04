@@ -9,9 +9,9 @@ export default function getTooltipLabelCallback(ocChart: OpenChatChart) {
       if (tooltipItem.raw === 0) return `圏外`
 
       const value = ocChart.graph2Max - (tooltipItem.raw as number) + 1
-      const tip = `${value} 位 (${ocChart.data.totalCount[tooltipItem.dataIndex]} 件中)`
+      const tip = `${value} 位 / ${ocChart.data.totalCount[tooltipItem.dataIndex]} 件`
 
-      if (ocChart.data.time[tooltipItem.dataIndex]) return `${tip} ${ocChart.data.time[tooltipItem.dataIndex]} 時点`
+      if (ocChart.data.time[tooltipItem.dataIndex]) return `${tip}・${ocChart.data.time[tooltipItem.dataIndex]} 時点`
       return tip
     }
 

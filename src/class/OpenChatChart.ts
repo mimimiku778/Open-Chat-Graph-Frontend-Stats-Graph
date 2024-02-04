@@ -104,7 +104,7 @@ export default class OpenChatChart implements ChartFactory {
     this.zoomWeekday = 0
 
     if (this.isHour) {
-      this.data = this.initData
+      this.buildHourData()
     } else {
       this.buildData()
     }
@@ -134,6 +134,16 @@ export default class OpenChatChart implements ChartFactory {
     }
   }
 
+  private buildHourData() {
+    this.data = {
+      date: this.initData.date,
+      graph1: this.initData.graph1,
+      graph2: this.initData.graph2,
+      time: this.initData.time,
+      totalCount: this.initData.totalCount,
+    }
+  }
+
   setGraph2Max(graph2: (number | null)[]) {
     this.graph2Max = graph2.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
   }
@@ -147,11 +157,6 @@ export default class OpenChatChart implements ChartFactory {
 
   getDate(limit: ChartLimit): (string | string[])[] {
     const data = this.initData.date.slice(this.limit * -1)
-
-    if (limit === 8) {
-      return formatDates(data, limit)
-    } else {
-      return formatDates(data, limit)
-    }
+    return formatDates(data, limit)
   }
 }

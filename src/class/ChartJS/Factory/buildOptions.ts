@@ -80,7 +80,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
         display: displayY,
         ticks: {
           callback: (v: any) => {
-            if (v === null) return ''
+            if (v === 0) return 1
             return v
           },
           stepSize: labelRangeLine.stepSize,
@@ -105,24 +105,32 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
 
   if (ocChart.data.graph2.length) {
     const labelRangeBar = getRankingBarLabelRange(ocChart, ocChart.getReverseGraph2(ocChart.data.graph2))
+    const show = displayY && (ocChart.data.graph2.some(v => v !== 0 && v !== null))
+
+    let lastTick = 0
 
     options.scales!.temperatureChart! = {
       position: 'right',
       min: labelRangeBar.dataMin,
       max: labelRangeBar.dataMax,
-      display: displayY,
+      display: show,
       grid: {
         display: false,
       },
       ticks: {
+        display: show,
         callback: (v: any) => {
-          if (v === null) return ''
           const value = ocChart.graph2Max - v + 1
-          return value <= ocChart.graph2Max ? `${Math.ceil(value)} 位` : ''
+          let tick = Math.ceil(value)
+
+          if (tick === lastTick) return ''
+          lastTick = tick
+
+          return `${tick} 位`
         },
         stepSize: labelRangeBar.stepSize,
-        precision: 0,
         autoSkip: true,
+        maxTicksLimit: 14,
         font: {
           size: dataFontSize,
         },

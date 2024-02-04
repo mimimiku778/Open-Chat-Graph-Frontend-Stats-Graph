@@ -20,6 +20,7 @@ export default class OpenChatChart implements ChartFactory {
   zoomWeekday: 0 | 1 | 2 = 0
   isMiniMobile = false
   graph2Max = 0
+  graph2Min = 0
   isZooming = false
   private isHour: boolean | null = null
 
@@ -146,6 +147,7 @@ export default class OpenChatChart implements ChartFactory {
 
   setGraph2Max(graph2: (number | null)[]) {
     this.graph2Max = graph2.reduce((a, b) => Math.max(a === null ? 0 : a, b === null ? 0 : b), -Infinity) as number
+    this.graph2Min = (graph2.filter(v => v !== null && v !== 0) as number[]).reduce((a, b) => Math.min(a, b), Infinity) as number
   }
 
   getReverseGraph2(graph2: (number | null)[]) {

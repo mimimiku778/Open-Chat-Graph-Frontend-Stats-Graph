@@ -26,5 +26,5 @@ type OpenChatChartOption = {
 type labelRangeLine = {
   dataMax: number;
   dataMin: number;
-  stepSize: number;
+  stepSize: number|undefined;
 }

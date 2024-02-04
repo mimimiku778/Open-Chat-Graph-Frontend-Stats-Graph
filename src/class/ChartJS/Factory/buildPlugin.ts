@@ -27,8 +27,9 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       onClick: () => false,
       labels: {
         font: {
-          weight: 500
-        }
+          weight: 500,
+        },
+        color: '#000',
       }
     },
     tooltip:

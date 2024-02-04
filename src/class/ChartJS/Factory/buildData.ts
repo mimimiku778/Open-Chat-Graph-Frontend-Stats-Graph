@@ -4,6 +4,7 @@ import getPointRadius from '../Callback/getPointRadius';
 import getDataLabelLine from '../Callback/getDataLabelLine';
 import getDataLabelBarCallback from '../Callback/getDataLabelBar';
 import getLineGradient from '../Callback/getLineGradient';
+import getLineGradientBar from '../Callback/getLineGradientBar';
 
 export const lineEasing = 'easeOutQuart'
 export const barEasing = 'easeOutCirc'
@@ -52,8 +53,19 @@ export default function buildData(ocChart: OpenChatChart) {
       type: 'bar',
       label: `${ocChart.option.label2} | ${ocChart.option.category}`,
       data: ocChart.getReverseGraph2(ocChart.data.graph2),
-      backgroundColor: ocChart.option.isRising ? 'rgba(235, 80, 242, 0.2)' : 'rgba(80, 119, 242, 0.2)',
+      //backgroundColor: ocChart.option.isRising ? 'rgba(235, 80, 242, 0.2)' : 'rgba(22, 194, 193, 0.2)',
+      backgroundColor: function (context) {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
 
+        if (!chartArea) {
+          // This case happens on initial chart load
+          return;
+        }
+        return getLineGradientBar(ctx, chartArea);
+      },
+      barPercentage: ocChart.limit === 8 ? 0.77 : 0.9,
+      borderRadius: 4,
       datalabels: {
         align: 'start',
         anchor: 'start',

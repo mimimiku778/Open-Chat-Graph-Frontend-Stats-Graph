@@ -12,8 +12,12 @@ const aspectRatio = (ocChart: OpenChatChart) => {
 
 export default function buildOptions(ocChart: OpenChatChart, plugins: any)
   : ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] {
+  const hasPosition = !!ocChart.data.graph2.length
   const limit = ocChart.limit
   const isWeekly = limit === 8
+
+  ChartJS.defaults.borderColor = isWeekly ? 'rgba(0,0,0,0)' : '#efefef';
+
 
   const ticksFontSizeMobile = ocChart.isMiniMobile ? 11 : 12
 
@@ -55,6 +59,10 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
     aspectRatio: aspectRatio(ocChart),
     scales: {
       x: {
+        grid: {
+          display: hasPosition ? displayY : true,
+          color: '#efefef'
+        },
         ticks: {
           color: getHorizontalLabelFontColor,
           padding: paddingX,
@@ -82,7 +90,9 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
           font: {
             size: dataFontSize,
           },
+          color: '#777',
         },
+
       },
     },
     plugins
@@ -116,6 +126,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
         font: {
           size: dataFontSize,
         },
+        color: '#777',
       },
     }
   }

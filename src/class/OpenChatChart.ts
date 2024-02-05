@@ -26,15 +26,15 @@ export default class OpenChatChart implements ChartFactory {
   private isHour: boolean | null = null
 
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
-    ChartJS.register(ChartDataLabels)
-    ChartJS.register(zoomPlugin)
-    ChartJS.register(getIncreaseLegendSpacingPlugin(this))
-    ChartJS.register(getEventCatcherPlugin(this))
-
     this.canvas = canvas
     this.limit = defaultLimit
     this.setSize()
     !this.isPC && this.visibilitychange()
+    
+    ChartJS.register(ChartDataLabels)
+    ChartJS.register(zoomPlugin)
+    ChartJS.register(getIncreaseLegendSpacingPlugin(this))
+    ChartJS.register(getEventCatcherPlugin(this))
   }
 
   private visibilitychange() {

@@ -28,12 +28,12 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       labels: {
         font: {
           weight: 700,
-          size: ocChart.isPC ? 13 : 12
+          size: ocChart.isPC ? 13.5 : (ocChart.isMiniMobile ? 12 : 13),
+          family: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
         },
-        padding: 10,
+        padding: 12,
         color: '#111',
       },
-      reverse:true
     },
     tooltip:
     {

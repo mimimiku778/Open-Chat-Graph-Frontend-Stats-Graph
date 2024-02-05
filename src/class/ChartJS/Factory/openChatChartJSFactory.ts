@@ -8,6 +8,6 @@ export default function openChatChartJSFactory(ocChart: OpenChatChart) {
   /* @ts-ignore */
   return new ChartJS(ocChart.canvas!, {
     data: buildData(ocChart),
-    options: buildOptions(ocChart, buildPlugin(ocChart)),
+    options: buildOptions(ocChart, buildPlugin(ocChart))
   })
 }

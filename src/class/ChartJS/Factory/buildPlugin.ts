@@ -17,7 +17,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
   const tooltipFontSize = ocChart.isPC ? 12 : (ocChart.isMiniMobile ? 10.5 : 11)
 
   const datalabelFontSize =
-    isLimit8 ? (ocChart.isPC ? 13 : (ocChart.isMiniMobile ? 11 : 12)) : limit === 31 ? 10.5 : (ocChart.isPC ? 11 : 10.5)
+    isLimit8 ? (ocChart.isPC ? 12.5 : (ocChart.isMiniMobile ? 11 : 12)) : limit === 31 ? 10.5 : (ocChart.isPC ? 11 : 10.5)
 
   Tooltip.positioners.tooltipAndLine = getTooltipAndLineCallback(ocChart)
 
@@ -27,10 +27,13 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       onClick: () => false,
       labels: {
         font: {
-          weight: 500,
+          weight: 700,
+          size: ocChart.isPC ? 13 : 12
         },
-        color: '#000',
-      }
+        padding: 10,
+        color: '#111',
+      },
+      reverse:true
     },
     tooltip:
     {
@@ -51,7 +54,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
     },
     datalabels: {
       borderRadius: 4,
-      color: 'black',
+      color: '#111',
       backgroundColor: 'rgba(0,0,0,0)',
       font: {
         size: datalabelFontSize,

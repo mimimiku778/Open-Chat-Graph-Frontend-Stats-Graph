@@ -4,7 +4,8 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
-import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts';
+import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts'; import getIncreaseLegendSpacingPlugin from './ChartJS/Plugin/getIncreaseLegendSpacingPlugin.ts';
+import getEventCatcherPlugin from './ChartJS/Plugin/getEventCatcherPlugin.ts';
 
 export default class OpenChatChart implements ChartFactory {
   chart: ChartJS = null!
@@ -27,6 +28,9 @@ export default class OpenChatChart implements ChartFactory {
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
     ChartJS.register(ChartDataLabels)
     ChartJS.register(zoomPlugin)
+    ChartJS.register(getIncreaseLegendSpacingPlugin(this))
+    ChartJS.register(getEventCatcherPlugin(this))
+
     this.canvas = canvas
     this.limit = defaultLimit
     this.setSize()
@@ -115,13 +119,19 @@ export default class OpenChatChart implements ChartFactory {
     if (animation) {
       this.animation = true
       this.chart = openChatChartJSFactory(this)
-      this.animation = false
     } else {
       this.animation = false
       this.chart = openChatChartJSFactory(this)
+      this.animation = true
+      this.enableAnimationOption()
     }
 
     afterOpenChatChartJSFactory(this)
+  }
+
+  private enableAnimationOption() {
+    (this.chart.data.datasets[0] as any).animation.duration = undefined;
+    this.chart.update()
   }
 
   private buildData() {

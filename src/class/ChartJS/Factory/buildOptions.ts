@@ -19,24 +19,22 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
   ChartJS.defaults.borderColor = isWeekly ? 'rgba(0,0,0,0)' : '#efefef';
 
 
-  const ticksFontSizeMobile = ocChart.isMiniMobile ? 11 : 12
+  const ticksFontSizeMobile = ocChart.isMiniMobile ? 10.5 : 11
 
   const ticksFontSize =
     isWeekly
       ? ocChart.isPC
-        ? 13
-        : ticksFontSizeMobile
+        ? 12
+        : ocChart.isMiniMobile ? 11 : 11.5
       : limit === 31
         ? ocChart.isPC
-          ? (ocChart.getIsHour() ? 12 : 11)
-          : (ocChart.getIsHour() ? 11.5 : 10.5)
+          ? (ocChart.getIsHour() ? 11.5 : 11)
+          : ticksFontSizeMobile
         : ocChart.isPC
-          ? 13
-          : 10.5
+          ? 12
+          : ticksFontSizeMobile
 
-  const dataFontSize = ocChart.isPC ? 13 : ticksFontSizeMobile
-
-  const paddingX = 17
+  const paddingX = isWeekly ? 20 : 17
   const paddingY = isWeekly ? 0 : 5
   const displayY = !isWeekly
 
@@ -48,8 +46,10 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
     },
     layout: {
       padding: {
-        left: 0,
         top: 0,
+        left: 0,
+        right: hasPosition ? 0 : 24,
+        bottom: hasPosition ? 0 : 9,
       },
     },
     onResize: (chart: ChartJS) => {
@@ -65,7 +65,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
         },
         ticks: {
           color: getHorizontalLabelFontColor,
-          padding: paddingX,
+          padding: hasPosition ? paddingX : (isWeekly ? 10 : 3),
           autoSkip: true,
           maxRotation: 90,
           font: {
@@ -88,9 +88,9 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
           autoSkip: true,
           padding: paddingY,
           font: {
-            size: dataFontSize,
+            size: ticksFontSize,
           },
-          color: '#777',
+          color: '#aaa',
         },
 
       },
@@ -120,10 +120,11 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
       ticks: {
         display: show,
         callback: (v: any) => {
+
           const value = ocChart.graph2Max - v + 1
           let tick = Math.ceil(value)
 
-          if (tick === lastTick) return ''
+          if (!tick || tick === lastTick) return ''
           lastTick = tick
 
           return `${tick} 位`
@@ -132,9 +133,9 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
         autoSkip: true,
         maxTicksLimit: 14,
         font: {
-          size: dataFontSize,
+          size: ticksFontSize,
         },
-        color: '#777',
+        color: '#aaa',
       },
     }
   }

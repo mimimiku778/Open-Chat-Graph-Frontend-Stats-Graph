@@ -12,14 +12,14 @@ export default function getHorizontalLabelFontColor(context: any) {
     return '#9C3848'
   } else if (label.includes(isYestString)) {
     // 最新24時間表示で昨日の時間の場合
-    return '#aaa'
+    return '#b7b7b7'
   } else if (label.includes(isRecentString)) {
     // 最新24時間表示で最新の時間の場合
-    return '#4d73ff'
+    return '#111'
   } else if (label.includes(':')) {
     // 最新24時間表示で今日の時間の場合
     return '#777'
   } else {
-    return 'black'
+    return '#777'
   }
 }

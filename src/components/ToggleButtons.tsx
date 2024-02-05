@@ -12,6 +12,10 @@ const chips1: [string, ToggleChart][] = [
   ['ランキング', 'ranking'],
 ]
 
+export const rankingChipsToggle = (toggle: ToggleChart) => {
+  chipsSignal.value = toggle
+}
+
 export const fetchChart = (chart: OpenChatChart, animation: boolean) => {
   const isAll = cateSignal.value === 'all'
 
@@ -46,9 +50,9 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
       spacing={1}
       alignItems="center"
       justifyContent="center"
-      m={isMiniMobile ? '-1rem' : '0'}
+      m={isMiniMobile ? '0 -1rem' : '0'}
       gap={isMiniMobile ? '2px' : '1rem'}
-      sx={{ borderBottom: 1, borderColor: '#efefef', pb:'1.5rem', pt:'1.625rem'}}
+      sx={{ borderBottom: 1, borderColor: '#efefef', pb: '1.5rem', pt: '1.625rem' }}
     >
       <Stack direction="row" spacing={1} alignItems="center">
         <ToggleButtonGroup value={cateSignal.value} exclusive onChange={handleAlignment} size="small">

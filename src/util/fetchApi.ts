@@ -1,5 +1,7 @@
-import { StateUpdater } from 'preact/hooks';
 import OpenChatChart from "../class/OpenChatChart"
+import { rankingChipsToggle } from '../components/ToggleButtons';
+import { setHasPotision } from '../app';
+import { toggleDisplay24h } from "../components/ChartLimitBtns";
 
 export async function fetchApi<T,>(url: string) {
   const response = await fetch(url)
@@ -15,9 +17,7 @@ export async function fetchApi<T,>(url: string) {
 
 const ocId = document.getElementById('app')?.dataset.ocId!
 const category = document.getElementById('app')?.dataset.category!
-
-//const BASE_URL = 'http://192.168.11.10'
-const BASE_URL = 'https://openchat-review.me'
+const BASE_URL = document.getElementById('app')?.dataset.baseUrl!
 
 const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean, animation: boolean) => (data: RankingPositionChart) => {
   const isRising = param === 'rising' || param === 'rising_all'
@@ -57,15 +57,23 @@ export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boo
   fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/${path}?sort=${param}`).then(renderChart(chart, param, all, animation))
 }
 
-export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean, setHasPosition: StateUpdater<boolean>) {
+export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean) {
   fetchApi<RankingPositionChart>(`${BASE_URL}/oc/${ocId}/position?sort=${param}`).then((data) => {
-    if (data.position.some(v => v !== 0 && v !== null)) {
-      renderChart(chart, param, all, true)(data)
-      setHasPosition(true)
-    } else {
+    if (!data.position.some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(data)
-      setHasPosition(false)
+      setHasPotision(false)
+      toggleDisplay24h(false)
+      return
     }
+
+    if (!data.position.slice(data.position.length - 8).some(v => v !== 0 && v !== null)) {
+      renderMemberChart(chart, true)(data)
+      rankingChipsToggle('')
+      toggleDisplay24h(false)
+      return
+    }
+
+    renderChart(chart, param, all, true)(data)
   })
 }
 

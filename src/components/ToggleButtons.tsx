@@ -1,8 +1,8 @@
 import { Chip, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery } from '@mui/material'
 import { signal } from '@preact/signals'
-import OpenChatChart from '../class/OpenChatChart'
+import OpenChatChart from '../classes/OpenChatChart'
 import { MutableRef } from 'preact/hooks'
-import { fetchInit, fetchUpdate } from '../util/fetchApi'
+import { fetchInit, fetchUpdate } from '../util/fetchRenderer'
 
 export const chipsSignal = signal<ToggleChart>('ranking')
 export const cateSignal = signal<'cate' | 'all'>('cate')

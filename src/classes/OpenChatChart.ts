@@ -3,8 +3,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import formatDates from "./ChartJS/Util/formatDates";
 import ModelFactory from "./ModelFactory.ts"
-import openChatChartJSFactory from "./ChartJS/Factory/openChatChartJSFactory.ts";
-import afterOpenChatChartJSFactory from './ChartJS/Factory/afterOpenChatChartJSFactory.ts'; import getIncreaseLegendSpacingPlugin from './ChartJS/Plugin/getIncreaseLegendSpacingPlugin.ts';
+import openChatChartJSFactory from "./ChartJS/Factories/openChatChartJSFactory.ts";
+import afterOpenChatChartJSFactory from './ChartJS/Factories/afterOpenChatChartJSFactory.ts'; import getIncreaseLegendSpacingPlugin from './ChartJS/Plugin/getIncreaseLegendSpacingPlugin.ts';
 import getEventCatcherPlugin from './ChartJS/Plugin/getEventCatcherPlugin.ts';
 
 export default class OpenChatChart implements ChartFactory {

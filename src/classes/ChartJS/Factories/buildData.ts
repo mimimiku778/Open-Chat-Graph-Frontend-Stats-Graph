@@ -1,23 +1,25 @@
 import { ChartConfiguration } from 'chart.js/auto';
 import OpenChatChart from "../../OpenChatChart";
-import getPointRadius from '../Callback/getPointRadius';
-import getDataLabelLine from '../Callback/getDataLabelLine';
 import getDataLabelBarCallback from '../Callback/getDataLabelBar';
 import getLineGradient from '../Callback/getLineGradient';
 import getLineGradientBar from '../Callback/getLineGradientBar';
+import getPointRadiusCallback from '../Callback/getPointRadiusCallback';
+import getDataLabelLineCallback from '../Callback/getDataLabelLineCallback';
 
 export const lineEasing = 'easeOutQuart'
 export const barEasing = 'easeOutCirc'
 
 export default function buildData(ocChart: OpenChatChart) {
+  const firstIndex = ocChart.data.graph1.findIndex(v => !!v)
+
   const data: ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] = {
     labels: ocChart.data.date,
     datasets: [
       {
         type: 'line',
         label: ocChart.option.label1,
-        data: ocChart.data.graph1.map(v => v !== 0 ? v : null),
-        pointRadius: getPointRadius,
+        data: ocChart.data.graph1,
+        pointRadius: getPointRadiusCallback(firstIndex),
         fill: false,
         backgroundColor: 'rgba(0,0,0,0)',
         borderColor: function (context) {
@@ -36,7 +38,7 @@ export default function buildData(ocChart: OpenChatChart) {
         /* @ts-ignore */
         lineTension: 0.4,
         datalabels: {
-          display: getDataLabelLine,
+          display: getDataLabelLineCallback(firstIndex),
           align: 'end',
           anchor: 'end',
         },
@@ -53,7 +55,6 @@ export default function buildData(ocChart: OpenChatChart) {
       type: 'bar',
       label: `${ocChart.option.label2} | ${ocChart.option.category}`,
       data: ocChart.getReverseGraph2(ocChart.data.graph2),
-      //backgroundColor: ocChart.option.isRising ? 'rgba(235, 80, 242, 0.2)' : 'rgba(22, 194, 193, 0.2)',
       backgroundColor: function (context) {
         const chart = context.chart;
         const { ctx, chartArea } = chart;

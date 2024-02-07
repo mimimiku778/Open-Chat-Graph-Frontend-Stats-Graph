@@ -1,3 +1,17 @@
+type RankingPositionChartArgDto = {
+  id: number
+  categoryKey: number
+  categoryName: string
+  baseUrl: string
+}
+
+type StatisticsChartDto = {
+  date: string[]
+  member: (number | null)[]
+  startDate: string
+  endDate: string
+}
+
 interface ErrorResponse {
   error: {
     code: string

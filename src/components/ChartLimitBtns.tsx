@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs } from '@mui/material'
 import { signal } from '@preact/signals'
 import { MutableRef } from 'preact/hooks'
-import OpenChatChart from '../class/OpenChatChart'
+import OpenChatChart from '../classes/OpenChatChart'
 import { fetchChart } from './ToggleButtons'
 
 export const limitBtnsSignal = signal<ChartLimit | 25>(8)

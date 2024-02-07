@@ -45,7 +45,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       bodyFont: {
         size: tooltipFontSize,
       },
-      enabled: isLimit8 && !ocChart.isPC && !ocChart.option.isRising ? false : true,
+      enabled: isLimit8 && !ocChart.option.isRising ? false : true,
       displayColors: false,
       callbacks: {
         label: getTooltipLabelCallback(ocChart)

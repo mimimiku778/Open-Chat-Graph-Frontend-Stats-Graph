@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks'
-import OpenChatChart from './class/OpenChatChart'
-import { fetchFirst } from './util/fetchApi'
+import OpenChatChart from './classes/OpenChatChart'
+import { fetchFirst } from './util/fetchRenderer'
 import ChartLimitBtns from './components/ChartLimitBtns'
 import ToggleButtons from './components/ToggleButtons'
 import { signal } from '@preact/signals'

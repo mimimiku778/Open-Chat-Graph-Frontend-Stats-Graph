@@ -1,6 +1,6 @@
 import { Context } from 'chartjs-plugin-datalabels';
 
-export default function getDataLabelLineCallback(firstIndex: number) {
+export default function getDataLabelLineCallback(firstIndex: number, lastIndex: number) {
   return (context: Context) => {
     const min = context.chart.scales.x.min
     const max = context.chart.scales.x.max
@@ -24,7 +24,7 @@ export default function getDataLabelLineCallback(firstIndex: number) {
     if (index === min || index === max) {
       return 'auto'
     } else {
-      return firstIndex === index ? 'auto' : false
+      return firstIndex === index || lastIndex === index ? 'auto' : false
     }
   }
 }

@@ -1,6 +1,6 @@
 import { ScriptableContext } from 'chart.js/auto';
 
-export default function getPointRadiusCallback(firstIndex: number) {
+export default function getPointRadiusCallback(firstIndex: number, lastIndex: number) {
   return (context: ScriptableContext<"line">) => {
     const min = context.chart.scales.x.min
     const max = context.chart.scales.x.max
@@ -24,7 +24,7 @@ export default function getPointRadiusCallback(firstIndex: number) {
     if (index === min || index === max) {
       return 3
     } else {
-      return firstIndex === index ? 3 : 0
+      return firstIndex === index || lastIndex === index ? 3 : 0
     }
   }
 }

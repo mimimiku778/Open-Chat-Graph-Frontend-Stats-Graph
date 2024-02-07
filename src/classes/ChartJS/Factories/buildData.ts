@@ -11,6 +11,7 @@ export const barEasing = 'easeOutCirc'
 
 export default function buildData(ocChart: OpenChatChart) {
   const firstIndex = ocChart.data.graph1.findIndex(v => !!v)
+  const lastIndex = (ocChart.data.graph1.length - 1) - ocChart.data.graph1.slice().reverse().findIndex(v => !!v)
 
   const data: ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] = {
     labels: ocChart.data.date,
@@ -19,7 +20,7 @@ export default function buildData(ocChart: OpenChatChart) {
         type: 'line',
         label: ocChart.option.label1,
         data: ocChart.data.graph1,
-        pointRadius: getPointRadiusCallback(firstIndex),
+        pointRadius: getPointRadiusCallback(firstIndex, lastIndex),
         fill: false,
         backgroundColor: 'rgba(0,0,0,0)',
         borderColor: function (context) {
@@ -38,7 +39,7 @@ export default function buildData(ocChart: OpenChatChart) {
         /* @ts-ignore */
         lineTension: 0.4,
         datalabels: {
-          display: getDataLabelLineCallback(firstIndex),
+          display: getDataLabelLineCallback(firstIndex, lastIndex),
           align: 'end',
           anchor: 'end',
         },

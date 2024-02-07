@@ -6,6 +6,7 @@ import ModelFactory from "./ModelFactory.ts"
 import openChatChartJSFactory from "./ChartJS/Factories/openChatChartJSFactory.ts";
 import afterOpenChatChartJSFactory from './ChartJS/Factories/afterOpenChatChartJSFactory.ts'; import getIncreaseLegendSpacingPlugin from './ChartJS/Plugin/getIncreaseLegendSpacingPlugin.ts';
 import getEventCatcherPlugin from './ChartJS/Plugin/getEventCatcherPlugin.ts';
+import paddingArray from './ChartJS/Util/paddingArray.ts';
 
 export default class OpenChatChart implements ChartFactory {
   chart: ChartJS = null!
@@ -136,12 +137,21 @@ export default class OpenChatChart implements ChartFactory {
 
   private buildData() {
     const li = this.limit
-    this.data = {
+    
+    const data = {
       date: this.getDate(this.limit),
       graph1: li ? this.initData.graph1.slice(li * -1) : this.initData.graph1,
       graph2: li ? this.initData.graph2.slice(li * -1) : this.initData.graph2,
       time: li ? this.initData.time.slice(li * -1) : this.initData.time,
       totalCount: li ? this.initData.totalCount.slice(li * -1) : this.initData.totalCount,
+    }
+
+    this.data = {
+      date: paddingArray<(string | string[])>(data.date, ''),
+      graph1: paddingArray<(number | null)>(data.graph1, null),
+      graph2: paddingArray<(number | null)>(data.graph2, null),
+      time: paddingArray<(string | null)>(data.time, null),
+      totalCount: paddingArray<(number | null)>(data.totalCount, null),
     }
   }
 

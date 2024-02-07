@@ -1,5 +1,5 @@
 import { Chart as ChartJS } from 'chart.js/auto';
-import { ChartTypeRegistry, Tooltip, TooltipPositionerFunction } from "chart.js";
+import { ActiveElement, ChartTypeRegistry, Point, Tooltip, TooltipPositionerFunction } from "chart.js";
 import OpenChatChart from "../../OpenChatChart";
 
 const defaultVerticalLine = {
@@ -30,14 +30,19 @@ const verticalLine = (chart: ChartJS, options: {
 }
 
 export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositionerFunction<keyof ChartTypeRegistry> =>
-  (elements: any, eventPosition: any) => {
+  (items: readonly ActiveElement[], eventPosition: Point) => {
     /** @ts-ignore */
-    const pos = Tooltip.positioners.average(elements, eventPosition);
+    const pos = Tooltip.positioners.average(items, eventPosition);
     if (pos === false) {
       return false;
     }
 
-    // １周間表示時に棒グラフのデータがない場合は非表示にする
+    // paddingで空のデータの場合は非表示にする
+    if (!ocChart.data.date[items[0].index]) {
+      return false
+    }
+
+    // 1週間表示時に棒グラフのデータがない場合は非表示にする
     if (
       (ocChart.limit === 8 || ocChart.zoomWeekday === 2)
       && (!ocChart.data.graph2.length)
@@ -45,7 +50,10 @@ export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositi
       return false
     }
 
-    !(ocChart.limit === 8 || ocChart.zoomWeekday === 2) && verticalLine(ocChart.chart, defaultVerticalLine, pos.x)
+    // 1週間表示時以外
+    if (!(ocChart.limit === 8 || ocChart.zoomWeekday === 2)) {
+      verticalLine(ocChart.chart, defaultVerticalLine, pos.x)
+    }
 
     return {
       x: pos.x,

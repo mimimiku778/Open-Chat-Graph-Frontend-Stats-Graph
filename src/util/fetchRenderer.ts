@@ -1,7 +1,7 @@
 import OpenChatChart from "../classes/OpenChatChart"
 import { rankingChipsToggle } from '../components/ToggleButtons';
-import { setHasPotision } from '../app';
-import { toggleDisplay24h } from "../components/ChartLimitBtns";
+import { setHasPotision, setRenderTab } from '../app';
+import { toggleDisplay24h, toggleDisplayMonth } from "../components/ChartLimitBtns";
 import fetcher from "./fetcher";
 
 const chatArgDto: RankingPositionChartArgDto = JSON.parse(
@@ -94,6 +94,9 @@ export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boo
 
 export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean) {
   fetcher<RankingPositionChart>(`${BASE_URL}/oc/${OC_ID}/position?${getQueryString(param, false)}`).then((data) => {
+    setRenderTab()
+    setHasPotision(true)
+
     // 順位データがない場合
     if (data.position.length > 1 && !data.position.some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(statsDto)
@@ -108,6 +111,11 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
       rankingChipsToggle('')
       toggleDisplay24h(false)
       return
+    }
+
+    // 最新１週間のデータがない場合
+    if (data.position.length <= 8) {
+      toggleDisplayMonth(false)
     }
 
     renderChart(chart, param, all, true)(data)

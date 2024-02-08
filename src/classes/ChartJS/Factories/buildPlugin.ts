@@ -22,7 +22,7 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
   Tooltip.positioners.tooltipAndLine = getTooltipAndLineCallback(ocChart)
 
   return {
-    zoom: limit === 0 && ocChart.data.date.length >= 31 ? getZoomOption(ocChart) : undefined,
+    zoom: limit === 0 ? getZoomOption(ocChart) : undefined,
     legend: {
       onClick: () => false,
       labels: {

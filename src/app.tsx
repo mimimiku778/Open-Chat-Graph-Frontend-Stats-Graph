@@ -5,11 +5,16 @@ import ChartLimitBtns from './components/ChartLimitBtns'
 import ToggleButtons from './components/ToggleButtons'
 import { signal } from '@preact/signals'
 
-export const hasPosition = signal(true)
+export const renderTab = signal(false)
+export const hasPosition = signal(false)
 
 export const setHasPotision = (toggle: boolean) => {
   hasPosition.value = toggle
   if (!toggle) document.getElementById('app')!.style.height = '49px'
+}
+
+export const setRenderTab = () => {
+  renderTab.value = true
 }
 
 export function App() {
@@ -22,8 +27,8 @@ export function App() {
 
   return (
     <div>
-      <ChartLimitBtns chart={chart} />
-      {hasPosition.value && <ToggleButtons chart={chart} />}
+      <div style="min-height: 49px">{renderTab.value && <ChartLimitBtns chart={chart} />}</div>
+      <div style="min-height: 101px">{hasPosition.value && <ToggleButtons chart={chart} />}</div>
     </div>
   )
 }

@@ -29,10 +29,6 @@ const onZoomLabelRange = (chart: ChartJS, ocChart: OpenChatChart) => {
   return [min, max]
 }
 
-export const resetTooltip = (ocChart: OpenChatChart) => {
-  ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
-}
-
 const toggleIsZooming = (ocChart: OpenChatChart, range: number) => {
   ocChart.isZooming = ocChart.data.date.length !== range
   ocChart.chart.options.plugins!.zoom!.pan!.enabled = ocChart.isZooming
@@ -57,19 +53,18 @@ const getOnZoomComplete = (ocChart: OpenChatChart) => {
 }
 
 export default function getZoomOption(ocChart: OpenChatChart) {
-  const limit = ocChart.limit
-  const enable = limit === 0
+  const enable = true
 
   return {
     pan: {
       enabled: enable,
       mode: 'x',
       onPanStart: () => {
-        //resetTooltip(ocChart)
+        ocChart.onPaning = true
       },
       onPanComplete: () => {
+        ocChart.onPaning = false
         onZoomLabelRange(ocChart.chart, ocChart)
-        resetTooltip(ocChart)
         ocChart.chart.update()
       },
     },
@@ -82,11 +77,11 @@ export default function getZoomOption(ocChart: OpenChatChart) {
       },
       mode: 'x',
       onZoomStart: () => {
-        //resetTooltip(ocChart)
+        ocChart.onZooming = true
       },
       onZoomComplete: () => {
+        ocChart.onZooming = false
         getOnZoomComplete(ocChart)
-        resetTooltip(ocChart)
         ocChart.chart.update()
       },
     },

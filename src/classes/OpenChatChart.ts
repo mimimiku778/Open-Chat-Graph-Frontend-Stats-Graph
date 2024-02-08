@@ -24,6 +24,8 @@ export default class OpenChatChart implements ChartFactory {
   graph2Max = 0
   graph2Min = 0
   isZooming = false
+  onZooming = false
+  onPaning = false
   private isHour: boolean | null = null
 
   constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
@@ -31,7 +33,7 @@ export default class OpenChatChart implements ChartFactory {
     this.limit = defaultLimit
     this.setSize()
     !this.isPC && this.visibilitychange()
-    
+
     ChartJS.register(ChartDataLabels)
     ChartJS.register(zoomPlugin)
     ChartJS.register(getIncreaseLegendSpacingPlugin(this))
@@ -137,7 +139,7 @@ export default class OpenChatChart implements ChartFactory {
 
   private buildData() {
     const li = this.limit
-    
+
     const data = {
       date: this.getDate(this.limit),
       graph1: li ? this.initData.graph1.slice(li * -1) : this.initData.graph1,
@@ -149,9 +151,9 @@ export default class OpenChatChart implements ChartFactory {
     this.data = {
       date: paddingArray<(string | string[])>(data.date, ''),
       graph1: paddingArray<(number | null)>(data.graph1, null),
-      graph2: paddingArray<(number | null)>(data.graph2, null),
-      time: paddingArray<(string | null)>(data.time, null),
-      totalCount: paddingArray<(number | null)>(data.totalCount, null),
+      graph2: data.graph2.length ? paddingArray<(number | null)>(data.graph2, null) : [],
+      time: data.time.length ? paddingArray<(string | null)>(data.time, null) : [],
+      totalCount: data.totalCount.length ? paddingArray<(number | null)>(data.totalCount, null) : [],
     }
   }
 

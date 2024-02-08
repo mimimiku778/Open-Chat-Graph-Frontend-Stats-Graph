@@ -95,7 +95,7 @@ export function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, all: boo
 export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: boolean) {
   fetcher<RankingPositionChart>(`${BASE_URL}/oc/${OC_ID}/position?${getQueryString(param, false)}`).then((data) => {
     // 順位データがない場合
-    if (!data.position.some(v => v !== 0 && v !== null)) {
+    if (data.position.length > 1 && !data.position.some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(statsDto)
       setHasPotision(false)
       toggleDisplay24h(false)
@@ -103,7 +103,7 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
     }
 
     // 最新１週間の順位データがない場合
-    if (!data.position.slice(data.position.length - 8).some(v => v !== 0 && v !== null)) {
+    if (data.position.length >= 8 && !data.position.slice(0, data.position.length - 8).some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(statsDto)
       rankingChipsToggle('')
       toggleDisplay24h(false)

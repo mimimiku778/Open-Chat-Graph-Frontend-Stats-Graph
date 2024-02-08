@@ -1,6 +1,7 @@
 import { Chart as ChartJS } from 'chart.js/auto';
 import { ActiveElement, ChartTypeRegistry, Point, Tooltip, TooltipPositionerFunction } from "chart.js";
 import OpenChatChart from "../../OpenChatChart";
+import { resetTooltip } from './getEventCatcherPlugin';
 
 const defaultVerticalLine = {
   color: 'black',
@@ -29,17 +30,40 @@ const verticalLine = (chart: ChartJS, options: {
   }
 }
 
+let isShow = false
+
 export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositionerFunction<keyof ChartTypeRegistry> =>
   (items: readonly ActiveElement[], eventPosition: Point) => {
     /** @ts-ignore */
     const pos = Tooltip.positioners.average(items, eventPosition);
     if (pos === false) {
+      isShow = false
       return false;
     }
 
+    const index = items[0].index
+
     // paddingで空のデータの場合は非表示にする
-    if (!ocChart.data.date[items[0].index]) {
+    if (!ocChart.data.date[index]) {
+      isShow = false
       return false
+    }
+
+    // zoom, pan時は非表示
+    if (ocChart.onZooming && ocChart.onPaning) {
+      isShow && resetTooltip(ocChart)
+      isShow = false
+      return false
+    }
+
+    if (ocChart.isZooming) {
+      const min = ocChart.chart.scales.x.min
+      const max = ocChart.chart.scales.x.max
+      if (index < min || index > max) {
+        isShow && resetTooltip(ocChart)
+        isShow = false
+        return false
+      }
     }
 
     // 1週間表示時に棒グラフのデータがない場合は非表示にする
@@ -47,6 +71,7 @@ export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositi
       (ocChart.limit === 8 || ocChart.zoomWeekday === 2)
       && (!ocChart.data.graph2.length)
     ) {
+      isShow = false
       return false
     }
 
@@ -55,6 +80,7 @@ export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositi
       verticalLine(ocChart.chart, defaultVerticalLine, pos.x)
     }
 
+    isShow = true
     return {
       x: pos.x,
       y: 0,

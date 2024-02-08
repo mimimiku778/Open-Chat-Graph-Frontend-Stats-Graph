@@ -31,6 +31,8 @@ const verticalLine = (chart: ChartJS, options: {
 }
 
 let isShow = false
+let onPaning = false
+let onZooming = false
 
 export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositionerFunction<keyof ChartTypeRegistry> =>
   (items: readonly ActiveElement[], eventPosition: Point) => {
@@ -49,16 +51,24 @@ export const getTooltipAndLineCallback = (ocChart: OpenChatChart): TooltipPositi
       return false
     }
 
-    // zoom, pan時は非表示
-    if (ocChart.onZooming && ocChart.onPaning) {
-      isShow && resetTooltip(ocChart)
-      isShow = false
-      return false
-    }
-
     if (ocChart.isZooming) {
       const min = ocChart.chart.scales.x.min
       const max = ocChart.chart.scales.x.max
+
+      if ((!ocChart.onPaning && onPaning) || (ocChart.onPaning && !onPaning)) {
+        onPaning = ocChart.onPaning
+        isShow && resetTooltip(ocChart)
+        isShow = false
+        return false
+      }
+
+      if ((!ocChart.onZooming && onZooming) || (ocChart.onZooming && !onZooming)) {
+        onZooming = ocChart.onZooming
+        isShow && resetTooltip(ocChart)
+        isShow = false
+        return false
+      }
+
       if (index < min || index > max) {
         isShow && resetTooltip(ocChart)
         isShow = false

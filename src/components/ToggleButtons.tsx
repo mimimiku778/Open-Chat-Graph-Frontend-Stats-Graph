@@ -52,7 +52,7 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
       justifyContent="center"
       m={isMiniMobile ? '0 -1rem' : '0'}
       gap={isMiniMobile ? '2px' : '1rem'}
-      sx={{ borderBottom: 1, borderColor: '#efefef', pb: '1.5rem', pt: '1.625rem' }}
+      sx={{ borderBottom: 1, borderColor: '#efefef', pb: '2rem', pt: '2rem' }}
     >
       <Stack direction="row" spacing={1} alignItems="center">
         <ToggleButtonGroup value={cateSignal.value} exclusive onChange={handleAlignment} size="small">

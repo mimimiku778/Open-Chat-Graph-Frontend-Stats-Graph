@@ -3,6 +3,7 @@ import OpenChatChart from "../../OpenChatChart"
 
 export const resetTooltip = (ocChart: OpenChatChart) => {
   ocChart.chart.tooltip!.setActiveElements([], { x: 0, y: 0 });
+  ocChart.chart.update()
 }
 
 let inChartArea = false;
@@ -16,7 +17,6 @@ export default function getEventCatcherPlugin(ocChart: OpenChatChart) {
       if (inChartArea && !args.inChartArea && !ocChart.isZooming) {
         // チャートエリア外イベントでツールチップ非表示
         resetTooltip(ocChart)
-        ocChart.chart.update()
       }
 
       if (args.inChartArea) inChartArea = true

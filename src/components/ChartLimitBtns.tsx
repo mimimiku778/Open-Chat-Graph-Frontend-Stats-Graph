@@ -8,6 +8,7 @@ export const limitBtnsSignal = signal<ChartLimit | 25>(8)
 
 export const toggle24hSignal = signal(true)
 export const toggleMonthSignal = signal(true)
+export const toggleAllSignal = signal(true)
 
 export function toggleDisplay24h(toggle: boolean) {
   toggle24hSignal.value = toggle
@@ -15,6 +16,10 @@ export function toggleDisplay24h(toggle: boolean) {
 
 export function toggleDisplayMonth(toggle: boolean) {
   toggleMonthSignal.value = toggle
+}
+
+export function toggleDisplayAll(toggle: boolean) {
+  toggleAllSignal.value = toggle
 }
 
 export default function ChartLimitBtns({ chart }: { chart: MutableRef<OpenChatChart | null> }) {
@@ -41,7 +46,7 @@ export default function ChartLimitBtns({ chart }: { chart: MutableRef<OpenChatCh
         {toggle24hSignal.value && <Tab value={25} label="最新24時間" />}
         <Tab value={8} label="1週間" />
         {toggleMonthSignal.value && <Tab value={31} label="1ヶ月" />}
-        {toggleMonthSignal.value && <Tab value={0} label="全期間" />}
+        {toggleAllSignal.value && <Tab value={0} label="全期間" />}
       </Tabs>
     </Box>
   )

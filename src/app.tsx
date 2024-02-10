@@ -28,7 +28,7 @@ export function App() {
   return (
     <div>
       <div style="min-height: 49px">{renderTab.value && <ChartLimitBtns chart={chart} />}</div>
-      <div style="min-height: 101px">{hasPosition.value && <ToggleButtons chart={chart} />}</div>
+      <div style="min-height: 68px">{hasPosition.value && <ToggleButtons chart={chart} />}</div>
     </div>
   )
 }

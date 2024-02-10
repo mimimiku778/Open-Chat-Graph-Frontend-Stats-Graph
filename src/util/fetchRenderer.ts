@@ -1,7 +1,7 @@
 import OpenChatChart from "../classes/OpenChatChart"
 import { rankingChipsToggle } from '../components/ToggleButtons';
 import { setHasPotision, setRenderTab } from '../app';
-import { toggleDisplay24h, toggleDisplayMonth } from "../components/ChartLimitBtns";
+import { toggleDisplay24h, toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns";
 import fetcher from "./fetcher";
 
 const chatArgDto: RankingPositionChartArgDto = JSON.parse(
@@ -34,7 +34,7 @@ const renderChart = (chart: OpenChatChart, param: ChartApiParam, all: boolean, a
       label1: 'メンバー数',
       label2: isRising
         ? (chart.getIsHour() ? '公式急上昇の順位' : '公式急上昇の最高順位')
-        : (chart.getIsHour() ? '公式ランキングの順位' : '公式ランキングの最高順位'),
+        : (chart.getIsHour() ? '公式ランキングの順位' : '公式ランキングの順位'),
       category: all ? 'すべて' : CATEGORY_NAME,
       isRising
     }, animation)
@@ -97,8 +97,18 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
     setRenderTab()
     setHasPotision(true)
 
+    // 最新１週間のデータがない場合
+    if (statsDto.date.length <= 8) {
+      toggleDisplayMonth(false)
+    }
+
+    // 最新1ヶ月のデータがない場合
+    if (statsDto.date.length <= 31) {
+      toggleDisplayAll(false)
+    }
+
     // 順位データがない場合
-    if (data.position.length > 1 && !data.position.some(v => v !== 0 && v !== null)) {
+    if (statsDto.date.length > 1 && !data.position.some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(statsDto)
       setHasPotision(false)
       toggleDisplay24h(false)
@@ -106,16 +116,11 @@ export function fetchFirst(chart: OpenChatChart, param: ChartApiParam, all: bool
     }
 
     // 最新１週間の順位データがない場合
-    if (data.position.length >= 8 && !data.position.slice(0, data.position.length - 8).some(v => v !== 0 && v !== null)) {
+    if (statsDto.date.length >= 8 && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)) {
       renderMemberChart(chart, true)(statsDto)
       rankingChipsToggle('')
       toggleDisplay24h(false)
       return
-    }
-
-    // 最新１週間のデータがない場合
-    if (data.position.length <= 8) {
-      toggleDisplayMonth(false)
     }
 
     renderChart(chart, param, all, true)(data)

@@ -5,7 +5,6 @@ import OpenChatChart from '../classes/OpenChatChart'
 import { fetchChart } from './ToggleButtons'
 
 export const limitBtnsSignal = signal<ChartLimit | 25>(8)
-
 export const toggle24hSignal = signal(true)
 export const toggleMonthSignal = signal(true)
 export const toggleAllSignal = signal(true)

@@ -4,13 +4,20 @@ import OpenChatChart from '../classes/OpenChatChart'
 import { MutableRef } from 'preact/hooks'
 import { fetchInit, fetchUpdate } from '../util/fetchRenderer'
 
-export const chipsSignal = signal<ToggleChart>('ranking')
-export const cateSignal = signal<'cate' | 'all'>('cate')
-
 const chips1: [string, ToggleChart][] = [
   ['急上昇', 'rising'],
   ['ランキング', 'ranking'],
 ]
+
+export const chipsSignal = signal<ToggleChart>('ranking')
+export const cateSignal = signal<'cate' | 'all'>('cate')
+export const toggleShowCategorySignal = signal(true)
+
+export function toggleDisplayCategory(toggle: boolean) {
+  toggleShowCategorySignal.value = toggle
+  cateSignal.value = toggle ? 'cate' : 'all'
+  chipsSignal.value = toggle ? 'ranking' : 'rising'
+}
 
 export const rankingChipsToggle = (toggle: ToggleChart) => {
   chipsSignal.value = toggle
@@ -59,20 +66,25 @@ export default function ToggleButtons({ chart }: { chart: MutableRef<OpenChatCha
           <ToggleButton value="all">
             <Typography variant="caption">すべて</Typography>
           </ToggleButton>
-          <ToggleButton value="cate">
-            <Typography variant="caption">カテゴリー内</Typography>
-          </ToggleButton>
+          {toggleShowCategorySignal.value && (
+            <ToggleButton value="cate">
+              <Typography variant="caption">カテゴリー内</Typography>
+            </ToggleButton>
+          )}
         </ToggleButtonGroup>
       </Stack>
       <Stack direction="row" spacing={1} alignItems="center">
-        {chips1.map((chip) => (
-          <Chip
-            className={`openchat-item-header-chip graph ${sig === chip[1] ? 'selected' : ''}`}
-            label={chip[0]}
-            onClick={handleChip(sig === chip[1] ? '' : chip[1])}
-            size={isMiniMobile ? 'small' : 'medium'}
-          />
-        ))}
+        {chips1.map(
+          (chip) =>
+            !(chip[1] === 'ranking' && !toggleShowCategorySignal.value) && (
+              <Chip
+                className={`openchat-item-header-chip graph ${sig === chip[1] ? 'selected' : ''}`}
+                label={chip[0]}
+                onClick={handleChip(sig === chip[1] ? '' : chip[1])}
+                size={isMiniMobile ? 'small' : 'medium'}
+              />
+            )
+        )}
       </Stack>
     </Stack>
   )

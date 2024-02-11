@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'preact/hooks'
 import OpenChatChart from './classes/OpenChatChart'
-import { fetchFirst } from './util/fetchRenderer'
+import { chatArgDto, fetchFirst } from './util/fetchRenderer'
 import ChartLimitBtns from './components/ChartLimitBtns'
-import ToggleButtons from './components/ToggleButtons'
+import ToggleButtons, { toggleDisplayCategory } from './components/ToggleButtons'
 import { signal } from '@preact/signals'
 
 export const renderTab = signal(false)
@@ -22,7 +22,9 @@ export function App() {
   const chart = useRef<OpenChatChart>(new OpenChatChart(canvas.current))
 
   useEffect(() => {
-    fetchFirst(chart.current, 'ranking', false)
+    const hasCategory = !!chatArgDto.categoryKey
+    toggleDisplayCategory(hasCategory)
+    fetchFirst(chart.current, hasCategory ? 'ranking' : 'rising', hasCategory)
   }, [])
 
   return (

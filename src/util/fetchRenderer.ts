@@ -4,7 +4,7 @@ import { setHasPotision, setRenderTab } from '../app';
 import { toggleDisplay24h, toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns";
 import fetcher from "./fetcher";
 
-const chatArgDto: RankingPositionChartArgDto = JSON.parse(
+export const chatArgDto: RankingPositionChartArgDto = JSON.parse(
   (document.getElementById('chart-arg') as HTMLScriptElement).textContent!
 )
 

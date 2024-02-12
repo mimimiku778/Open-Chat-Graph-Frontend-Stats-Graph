@@ -1,6 +1,6 @@
 import { ChartConfiguration } from 'chart.js/auto';
 import OpenChatChart from "../../OpenChatChart";
-import getDataLabelBarCallback from '../Callback/getDataLabelBar';
+import getDataLabelBarCallback from '../Callback/getDataLabelBarCallback';
 import getLineGradient from '../Callback/getLineGradient';
 import getLineGradientBar from '../Callback/getLineGradientBar';
 import getPointRadiusCallback from '../Callback/getPointRadiusCallback';
@@ -75,7 +75,7 @@ export default function buildData(ocChart: OpenChatChart) {
           if (v === null) return ''
           return v ? ocChart.graph2Max - v + 1 : '圏外'
         },
-        display: getDataLabelBarCallback
+        display: getDataLabelBarCallback(ocChart)
       },
       yAxisID: 'temperatureChart',
     })

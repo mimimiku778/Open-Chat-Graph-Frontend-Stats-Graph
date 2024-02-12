@@ -27,6 +27,15 @@ interface RankingPositionChart {
   totalCount: (number | null)[]
 }
 
-type ToggleChart = 'rising' | 'ranking' | ''
+type ToggleChart = 'rising' | 'ranking' | 'none'
 
 type ChartApiParam = 'ranking' | 'ranking_all' | 'rising' | 'rising_all'
+
+type urlParams = {
+  category: 'in' | 'all',
+  bar: ToggleChart,
+  limit: 'hour' | 'week' | 'month' | 'all'
+}
+
+type urlParamsName = keyof urlParams
+type urlParamsValue<T extends urlParamsName> = urlParams[T]

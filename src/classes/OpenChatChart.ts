@@ -21,6 +21,7 @@ export default class OpenChatChart implements ChartFactory {
   limit: ChartLimit = 0
   zoomWeekday: 0 | 1 | 2 = 0
   isMiniMobile = false
+  isMiddleMobile = false
   graph2Max = 0
   graph2Min = 0
   isZooming = false
@@ -95,6 +96,7 @@ export default class OpenChatChart implements ChartFactory {
     this.innerWidth = window.innerWidth
     this.isPC = this.innerWidth >= 512
     this.isMiniMobile = this.innerWidth < 360
+    this.isMiddleMobile = this.innerWidth < 390
   }
 
   setIsHour(isHour: boolean | null, limit: ChartLimit | null = null) {
@@ -107,7 +109,7 @@ export default class OpenChatChart implements ChartFactory {
   }
 
   private createChart(animation: boolean) {
-    this.isMiniMobile = this.innerWidth < 360
+    this.setSize()
     this.isZooming = false
     this.zoomWeekday = 0
 

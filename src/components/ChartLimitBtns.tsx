@@ -1,13 +1,10 @@
 import { Box, Tab, Tabs } from '@mui/material'
 import { signal } from '@preact/signals'
-import { MutableRef } from 'preact/hooks'
-import OpenChatChart from '../classes/OpenChatChart'
-import { fetchChart } from './ToggleButtons'
+import { handleChangeLimit, limitBtnsSignal } from '../app'
 
-export const limitBtnsSignal = signal<ChartLimit | 25>(8)
-export const toggle24hSignal = signal(true)
-export const toggleMonthSignal = signal(true)
-export const toggleAllSignal = signal(true)
+const toggle24hSignal = signal(true)
+const toggleMonthSignal = signal(true)
+const toggleAllSignal = signal(true)
 
 export function toggleDisplay24h(toggle: boolean) {
   toggle24hSignal.value = toggle
@@ -21,22 +18,10 @@ export function toggleDisplayAll(toggle: boolean) {
   toggleAllSignal.value = toggle
 }
 
-export default function ChartLimitBtns({ chart }: { chart: MutableRef<OpenChatChart | null> }) {
+export default function ChartLimitBtns() {
   const handleChange = (e: MouseEvent, limit: ChartLimit | 25) => {
     e.preventDefault()
-    limitBtnsSignal.value = limit
-
-    const isHour = limit === 25
-    if (isHour) {
-      chart.current?.setIsHour(isHour, 31)
-      fetchChart(chart.current!, true)
-    } else if (chart.current?.getIsHour()) {
-      chart.current?.setIsHour(isHour, limit)
-      fetchChart(chart.current!, true)
-    } else {
-      chart.current?.setIsHour(null)
-      chart.current?.update(limit)
-    }
+    handleChangeLimit(limit)
   }
 
   return (

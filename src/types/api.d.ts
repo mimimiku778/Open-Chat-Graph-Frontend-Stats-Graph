@@ -27,9 +27,9 @@ interface RankingPositionChart {
   totalCount: (number | null)[]
 }
 
-type ToggleChart = 'rising' | 'ranking' | 'none'
-
 type ChartApiParam = 'ranking' | 'ranking_all' | 'rising' | 'rising_all'
+type ToggleChart = 'rising' | 'ranking' | 'none'
+type PotisionPath = 'position_hour' | 'position'
 
 type urlParams = {
   category: 'in' | 'all',

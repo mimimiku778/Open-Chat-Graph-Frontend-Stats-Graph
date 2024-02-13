@@ -27,11 +27,10 @@ export default class OpenChatChart implements ChartFactory {
   isZooming = false
   onZooming = false
   onPaning = false
-  private isHour: boolean | null = null
+  private isHour: boolean = false
 
-  constructor(canvas: HTMLCanvasElement, defaultLimit: ChartLimit = 8) {
+  constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
-    this.limit = defaultLimit
     this.setSize()
     !this.isPC && this.visibilitychange()
 
@@ -68,12 +67,13 @@ export default class OpenChatChart implements ChartFactory {
     })
   }
 
-  render(data: ChartArgs, option: OpenChatChartOption, animation: boolean): void {
+  render(data: ChartArgs, option: OpenChatChartOption, animation: boolean, limit: ChartLimit): void {
     if (!this.canvas) {
       throw Error('HTMLCanvasElement is not defined')
     }
 
     this.chart?.destroy()
+    this.limit = limit
     this.option = option
     this.initData = data
     this.createChart(animation)
@@ -99,9 +99,8 @@ export default class OpenChatChart implements ChartFactory {
     this.isMiddleMobile = this.innerWidth < 390
   }
 
-  setIsHour(isHour: boolean | null, limit: ChartLimit | null = null) {
+  setIsHour(isHour: boolean) {
     this.isHour = isHour
-    if (limit !== null) this.limit = limit
   }
 
   getIsHour(): boolean {

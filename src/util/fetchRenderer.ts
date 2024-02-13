@@ -1,24 +1,45 @@
-import OpenChatChart from "../classes/OpenChatChart"
-import { rankingChipsToggle, setRenderPositionBtns, setRenderTab } from '../app';
-import { toggleDisplay24h, toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns";
+import { categorySignal, chart, limitSignal, rankingRisingSignal } from "../signal/chartState";
+import { toggleDisplay24h } from "../components/ChartLimitBtns";
+import { setRenderPositionBtns } from '../app';
 import fetcher from "./fetcher";
 
 export const chatArgDto: RankingPositionChartArgDto = JSON.parse(
   (document.getElementById('chart-arg') as HTMLScriptElement).textContent!
 )
-
-const statsDto: StatisticsChartDto = JSON.parse(
+export const statsDto: StatisticsChartDto = JSON.parse(
   (document.getElementById('stats-dto') as HTMLScriptElement).textContent!
 )
 
-const OC_ID = chatArgDto.id
-const CATEGORY_NAME = chatArgDto.categoryName
-const CATEGORY_KEY = chatArgDto.categoryKey
-const BASE_URL = chatArgDto.baseUrl
-const START_DATE = statsDto.startDate
-const END_DATE = statsDto.endDate
+const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
+  const query = {
+    sort: '',
+    category: '',
+    start_date: isHour ? '' : statsDto.startDate,
+    end_date: isHour ? '' : statsDto.endDate,
+  }
 
-const renderChart = (chart: OpenChatChart, param: ChartApiParam, animation: boolean) =>
+  switch (param) {
+    case 'ranking':
+      query.sort = 'ranking'
+      query.category = chatArgDto.categoryKey.toString()
+      break
+    case 'ranking_all':
+      query.sort = 'ranking'
+      query.category = '0'
+      break
+    case 'rising':
+      query.sort = 'rising'
+      query.category = chatArgDto.categoryKey.toString()
+      break
+    case 'rising_all':
+      query.sort = 'rising'
+      query.category = '0'
+  }
+
+  return new URLSearchParams(query).toString()
+}
+
+const renderChart = (param: ChartApiParam, animation: boolean, limit: ChartLimit) =>
   (data: RankingPositionChart) => {
     const isRising = param === 'rising' || param === 'rising_all'
 
@@ -33,12 +54,12 @@ const renderChart = (chart: OpenChatChart, param: ChartApiParam, animation: bool
       label2: isRising
         ? (chart.getIsHour() ? '公式急上昇の順位' : '公式急上昇の最高順位')
         : (chart.getIsHour() ? '公式ランキングの順位' : '公式ランキングの順位'),
-      category: param.indexOf('all') !== -1 ? 'すべて' : CATEGORY_NAME,
+      category: param.indexOf('all') !== -1 ? 'すべて' : chatArgDto.categoryName,
       isRising
-    }, animation)
+    }, animation, limit)
   }
 
-const renderMemberChart = (chart: OpenChatChart, animation: boolean) =>
+const renderMemberChart = (animation: boolean, limit: ChartLimit) =>
   (data: RankingPositionChart | StatisticsChartDto) => {
     chart.render({
       date: data.date,
@@ -49,85 +70,60 @@ const renderMemberChart = (chart: OpenChatChart, animation: boolean) =>
     }, {
       label1: 'メンバー数',
       label2: '',
-      category: CATEGORY_NAME
-    }, animation)
+      category: chatArgDto.categoryName
+    }, animation, limit)
   }
 
-const getQueryString = (param: ChartApiParam, isHour: boolean) => {
-  const query = {
-    sort: '',
-    category: '',
-    start_date: isHour ? '' : START_DATE,
-    end_date: isHour ? '' : END_DATE,
+export async function fetchChart(animation: boolean) {
+  const path: PotisionPath = chart.getIsHour() ? 'position_hour' : 'position'
+  const limit: ChartLimit = limitSignal.value === 25 ? 31 : limitSignal.value
+
+  // メンバーグラフのみの場合
+  if (rankingRisingSignal.value === 'none') {
+    chart.getIsHour()
+      ? await fetcher<RankingPositionChart>(
+        `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery('ranking', false)}`
+      ).then(renderMemberChart(animation, limit))
+      : renderMemberChart(animation, limit)(statsDto)
+    return
   }
 
-  switch (param) {
-    case 'ranking':
-      query.sort = 'ranking'
-      query.category = CATEGORY_KEY.toString()
-      break
-    case 'ranking_all':
-      query.sort = 'ranking'
-      query.category = '0'
-      break
-    case 'rising':
-      query.sort = 'rising'
-      query.category = CATEGORY_KEY.toString()
-      break
-    case 'rising_all':
-      query.sort = 'rising'
-      query.category = '0'
-  }
+  const param: ChartApiParam = `${rankingRisingSignal.value}${categorySignal.value === 'all' ? '_all' : ''}`
 
-  return new URLSearchParams(query).toString()
-}
+  await fetcher<RankingPositionChart>(
+    `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery(param, false)}`
+  ).then((data) => {
+    const isDefaultGraph = limitSignal.value === 8
+      && rankingRisingSignal.value === 'ranking'
+      && categorySignal.value === 'in'
 
-const getPositionPath = (isHour: boolean) => isHour ? 'position_hour' : 'position'
-
-export async function fetchUpdate(chart: OpenChatChart, param: ChartApiParam, animation: boolean) {
-  const isHour = chart.getIsHour()
-  const path = getPositionPath(isHour)
-  fetcher<RankingPositionChart>(`${BASE_URL}/oc/${OC_ID}/${path}?${getQueryString(param, isHour)}`).then(renderChart(chart, param, animation))
-}
-
-export async function fetchFirstDefault(chart: OpenChatChart, param: ChartApiParam) {
-  await fetcher<RankingPositionChart>(`${BASE_URL}/oc/${OC_ID}/position?${getQueryString(param, false)}`).then((data) => {
-    setRenderTab()
-    setRenderPositionBtns(true)
-
-    // 最新１週間のデータがない場合
-    if (statsDto.date.length <= 8) {
-      toggleDisplayMonth(false)
-    }
-
-    // 最新1ヶ月のデータがない場合
-    if (statsDto.date.length <= 31) {
-      toggleDisplayAll(false)
+    if (!isDefaultGraph) {
+      renderChart(param, animation, limit)(data)
+      return
     }
 
     // 順位データがない場合
-    if (statsDto.date.length > 1 && !data.position.some(v => v !== 0 && v !== null)) {
-      renderMemberChart(chart, true)(statsDto)
+    if (
+      statsDto.date.length > 1
+      && !data.position.some(v => v !== 0 && v !== null)
+    ) {
+      renderMemberChart(true, limit)(statsDto)
       setRenderPositionBtns(false)
-      toggleDisplay24h(false)
+      toggleDisplay24h.value = false
       return
     }
 
     // 最新１週間の順位データがない場合
-    if (statsDto.date.length >= 8 && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)) {
-      renderMemberChart(chart, true)(statsDto)
-      rankingChipsToggle('none')
-      toggleDisplay24h(false)
+    if (
+      statsDto.date.length >= 8
+      && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)
+    ) {
+      renderMemberChart(true, limit)(statsDto)
+      rankingRisingSignal.value = 'none'
+      toggleDisplay24h.value = false
       return
     }
 
-    renderChart(chart, param, true)(data)
+    renderChart(param, animation, limit)(data)
   })
-}
-
-export async function fetchInit(chart: OpenChatChart, animation: boolean) {
-  const path = getPositionPath(chart.getIsHour())
-  path === 'position'
-    ? renderMemberChart(chart, animation)(statsDto)
-    : fetcher<RankingPositionChart>(`${BASE_URL}/oc/${OC_ID}/${path}?${getQueryString('ranking', false)}`).then(renderMemberChart(chart, animation))
 }

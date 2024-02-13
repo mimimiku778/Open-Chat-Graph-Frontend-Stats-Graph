@@ -1,29 +1,20 @@
 import { Chip, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery } from '@mui/material'
-import { signal } from '@preact/signals'
-import { cateSignal, chipsSignal, handleChangeCategory, handleChangeRankingRising } from '../app'
+import { categorySignal, rankingRisingSignal, handleChangeCategory, handleChangeRankingRising, toggleShowCategorySignal } from '../signal/chartState'
 
 const chips1: [string, ToggleChart][] = [
   ['急上昇', 'rising'],
   ['ランキング', 'ranking'],
 ]
 
-const toggleShowCategorySignal = signal(true)
-
-export function toggleDisplayCategory(toggle: boolean) {
-  toggleShowCategorySignal.value = toggle
-  cateSignal.value = toggle ? 'cate' : 'all'
-  chipsSignal.value = toggle ? 'ranking' : 'rising'
-}
-
 export default function ToggleButtons() {
   const isMiniMobile = useMediaQuery('(max-width:359px)')
 
-  const handleChangeToggle = (e: MouseEvent, alignment: 'cate' | 'all' | null) => {
+  const handleChangeToggle = (e: MouseEvent, alignment: urlParamsValue<'category'> | null) => {
     e.preventDefault()
     handleChangeCategory(alignment)
   }
 
-  const sig = chipsSignal.value
+  const sig = rankingRisingSignal.value
   return (
     <Stack
       direction="row"
@@ -35,12 +26,12 @@ export default function ToggleButtons() {
       sx={{ pt: '2rem' }}
     >
       <Stack direction="row" spacing={1} alignItems="center">
-        <ToggleButtonGroup value={cateSignal.value} exclusive onChange={handleChangeToggle} size="small">
+        <ToggleButtonGroup value={categorySignal.value} exclusive onChange={handleChangeToggle} size="small">
           <ToggleButton value="all">
             <Typography variant="caption">すべて</Typography>
           </ToggleButton>
           {toggleShowCategorySignal.value && (
-            <ToggleButton value="cate">
+            <ToggleButton value="in">
               <Typography variant="caption">カテゴリー内</Typography>
             </ToggleButton>
           )}
@@ -53,7 +44,7 @@ export default function ToggleButtons() {
               <Chip
                 className={`openchat-item-header-chip graph ${sig === chip[1] ? 'selected' : ''}`}
                 label={chip[0]}
-                onClick={handleChangeRankingRising(sig === chip[1] ? 'none' : chip[1])}
+                onClick={() => handleChangeRankingRising(sig === chip[1] ? 'none' : chip[1])}
                 size={isMiniMobile ? 'small' : 'medium'}
               />
             )

@@ -98,6 +98,7 @@ export async function fetchChart(animation: boolean) {
       && categorySignal.value === 'in'
 
     if (!isDefaultGraph) {
+      setRenderPositionBtns(true)
       renderChart(param, animation, limit)(data)
       return
     }
@@ -107,8 +108,8 @@ export async function fetchChart(animation: boolean) {
       statsDto.date.length > 1
       && !data.position.some(v => v !== 0 && v !== null)
     ) {
-      renderMemberChart(true, limit)(statsDto)
       setRenderPositionBtns(false)
+      renderMemberChart(true, limit)(statsDto)
       toggleDisplay24h.value = false
       return
     }
@@ -118,12 +119,14 @@ export async function fetchChart(animation: boolean) {
       statsDto.date.length >= 8
       && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)
     ) {
+      setRenderPositionBtns(true)
       renderMemberChart(true, limit)(statsDto)
       rankingRisingSignal.value = 'none'
       toggleDisplay24h.value = false
       return
     }
 
+    setRenderPositionBtns(true)
     renderChart(param, animation, limit)(data)
   })
 }

@@ -16,9 +16,8 @@ export const setRenderPositionBtns = (toggle: boolean) => {
 const init = async () => {
   setChartStatesFromUrlParams()
   initDisplay()
-  setRenderPositionBtns(true)
+  await fetchChart(true)
   renderTab.value = true
-  fetchChart(true)
   setUrlParamsFromChartStates()
 }
 

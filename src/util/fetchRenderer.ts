@@ -80,6 +80,8 @@ export async function fetchChart(animation: boolean) {
 
   // メンバーグラフのみの場合
   if (rankingRisingSignal.value === 'none') {
+    setRenderPositionBtns(true)
+    
     chart.getIsHour()
       ? await fetcher<RankingPositionChart>(
         `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery('ranking', false)}`
@@ -96,7 +98,7 @@ export async function fetchChart(animation: boolean) {
     const isDefaultGraph = limitSignal.value === 8
       && rankingRisingSignal.value === 'ranking'
       && categorySignal.value === 'in'
-
+    console.log(isDefaultGraph)
     if (!isDefaultGraph) {
       setRenderPositionBtns(true)
       renderChart(param, animation, limit)(data)

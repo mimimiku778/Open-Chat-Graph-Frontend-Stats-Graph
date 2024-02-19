@@ -1,14 +1,12 @@
-export function updateURLSearchParams(params: { [key: string]: string } | null): URL {
+export function updateURLSearchParams(params: { [key: string]: string }): URL {
   const url = new URL(window.location.href);
   url.search = ''
 
-  if (!params) {
-    for (let k in url.searchParams.entries()) {
+  for (let k in params) {
+    if (params[k]) {
+      url.searchParams.set(k, params[k])
+    } else {
       url.searchParams.delete(k)
-    }
-  } else {
-    for (let k in params) {
-      params[k] && url.searchParams.set(k, params[k])
     }
   }
 

@@ -1,7 +1,8 @@
-import { categorySignal, chart, limitSignal, rankingRisingSignal } from "../signal/chartState";
+import { categorySignal, chart, limitSignal, loading, rankingRisingSignal } from "../signal/chartState";
 import { toggleDisplay24h } from "../components/ChartLimitBtns";
 import { setRenderPositionBtns } from '../app';
 import fetcher from "./fetcher";
+import { defaultBar, defaultCategory, defaultLimitNum } from "./urlParam";
 
 export const chatArgDto: RankingPositionChartArgDto = JSON.parse(
   (document.getElementById('chart-arg') as HTMLScriptElement).textContent!
@@ -21,7 +22,7 @@ const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
   switch (param) {
     case 'ranking':
       query.sort = 'ranking'
-      query.category = chatArgDto.categoryKey.toString()
+      query.category = chatArgDto.categoryKey?.toString() ?? ''
       break
     case 'ranking_all':
       query.sort = 'ranking'
@@ -29,7 +30,7 @@ const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
       break
     case 'rising':
       query.sort = 'rising'
-      query.category = chatArgDto.categoryKey.toString()
+      query.category = chatArgDto.categoryKey?.toString() ?? ''
       break
     case 'rising_all':
       query.sort = 'rising'
@@ -41,6 +42,7 @@ const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
 
 const renderChart = (param: ChartApiParam, animation: boolean, limit: ChartLimit) =>
   (data: RankingPositionChart) => {
+    loading.value = false
     const isRising = param === 'rising' || param === 'rising_all'
 
     chart.render({
@@ -61,6 +63,7 @@ const renderChart = (param: ChartApiParam, animation: boolean, limit: ChartLimit
 
 const renderMemberChart = (animation: boolean, limit: ChartLimit) =>
   (data: RankingPositionChart | StatisticsChartDto) => {
+    loading.value = false
     chart.render({
       date: data.date,
       graph1: data.member,
@@ -74,6 +77,10 @@ const renderMemberChart = (animation: boolean, limit: ChartLimit) =>
     }, animation, limit)
   }
 
+export function renderChartWithoutRanking() {
+  renderMemberChart(true, limitSignal.value as ChartLimit)(statsDto)
+}
+
 export async function fetchChart(animation: boolean) {
   const path: PotisionPath = chart.getIsHour() ? 'position_hour' : 'position'
   const limit: ChartLimit = limitSignal.value === 25 ? 31 : limitSignal.value
@@ -81,24 +88,28 @@ export async function fetchChart(animation: boolean) {
   // メンバーグラフのみの場合
   if (rankingRisingSignal.value === 'none') {
     setRenderPositionBtns(true)
-    
-    chart.getIsHour()
-      ? await fetcher<RankingPositionChart>(
+
+    if (chart.getIsHour()) {
+      loading.value = true
+      await fetcher<RankingPositionChart>(
         `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery('ranking', false)}`
       ).then(renderMemberChart(animation, limit))
-      : renderMemberChart(animation, limit)(statsDto)
+    } else {
+      renderMemberChart(animation, limit)(statsDto)
+    }
     return
   }
 
   const param: ChartApiParam = `${rankingRisingSignal.value}${categorySignal.value === 'all' ? '_all' : ''}`
 
+  loading.value = true
   await fetcher<RankingPositionChart>(
     `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery(param, false)}`
   ).then((data) => {
-    const isDefaultGraph = limitSignal.value === 8
-      && rankingRisingSignal.value === 'ranking'
-      && categorySignal.value === 'in'
-    console.log(isDefaultGraph)
+    const isDefaultGraph = limitSignal.value === defaultLimitNum
+      && rankingRisingSignal.value === defaultBar
+      && categorySignal.value === defaultCategory
+
     if (!isDefaultGraph) {
       setRenderPositionBtns(true)
       renderChart(param, animation, limit)(data)
@@ -111,8 +122,8 @@ export async function fetchChart(animation: boolean) {
       && !data.position.some(v => v !== 0 && v !== null)
     ) {
       setRenderPositionBtns(false)
-      renderMemberChart(true, limit)(statsDto)
       toggleDisplay24h.value = false
+      renderMemberChart(true, limit)(statsDto)
       return
     }
 
@@ -122,9 +133,9 @@ export async function fetchChart(animation: boolean) {
       && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)
     ) {
       setRenderPositionBtns(true)
-      renderMemberChart(true, limit)(statsDto)
       rankingRisingSignal.value = 'none'
       toggleDisplay24h.value = false
+      renderMemberChart(true, limit)(statsDto)
       return
     }
 

@@ -1,6 +1,6 @@
 type RankingPositionChartArgDto = {
   id: number
-  categoryKey: number
+  categoryKey: number|null
   categoryName: string
   baseUrl: string
 }

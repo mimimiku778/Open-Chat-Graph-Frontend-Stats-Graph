@@ -1,18 +1,46 @@
 import { Chip, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery } from '@mui/material'
-import { categorySignal, rankingRisingSignal, handleChangeCategory, handleChangeRankingRising, toggleShowCategorySignal } from '../signal/chartState'
+import {
+  categorySignal,
+  rankingRisingSignal,
+  handleChangeCategory,
+  handleChangeRankingRising,
+  toggleShowCategorySignal,
+} from '../signal/chartState'
 
 const chips1: [string, ToggleChart][] = [
   ['急上昇', 'rising'],
   ['ランキング', 'ranking'],
 ]
 
-export default function ToggleButtons() {
-  const isMiniMobile = useMediaQuery('(max-width:359px)')
-
+function CategoryToggle() {
   const handleChangeToggle = (e: MouseEvent, alignment: urlParamsValue<'category'> | null) => {
     e.preventDefault()
-    handleChangeCategory(alignment)
+    rankingRisingSignal.value !== 'none' && handleChangeCategory(alignment)
   }
+
+  return (
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="center"
+      sx={{ opacity: rankingRisingSignal.value === 'none' ? 0.2 : undefined }}
+    >
+      <ToggleButtonGroup value={categorySignal.value} exclusive onChange={handleChangeToggle} size="small">
+        <ToggleButton value="all">
+          <Typography variant="caption">すべて</Typography>
+        </ToggleButton>
+        {toggleShowCategorySignal.value && (
+          <ToggleButton value="in">
+            <Typography variant="caption">カテゴリー内</Typography>
+          </ToggleButton>
+        )}
+      </ToggleButtonGroup>
+    </Stack>
+  )
+}
+
+export default function ToggleButtons() {
+  const isMiniMobile = useMediaQuery('(max-width:359px)')
 
   const sig = rankingRisingSignal.value
   return (
@@ -25,18 +53,7 @@ export default function ToggleButtons() {
       gap={isMiniMobile ? '2px' : '1rem'}
       sx={{ pt: '2rem' }}
     >
-      <Stack direction="row" spacing={1} alignItems="center">
-        <ToggleButtonGroup value={categorySignal.value} exclusive onChange={handleChangeToggle} size="small">
-          <ToggleButton value="all">
-            <Typography variant="caption">すべて</Typography>
-          </ToggleButton>
-          {toggleShowCategorySignal.value && (
-            <ToggleButton value="in">
-              <Typography variant="caption">カテゴリー内</Typography>
-            </ToggleButton>
-          )}
-        </ToggleButtonGroup>
-      </Stack>
+      <CategoryToggle />
       <Stack direction="row" spacing={1} alignItems="center">
         {chips1.map(
           (chip) =>

@@ -29,15 +29,17 @@ export default class OpenChatChart implements ChartFactory {
   onPaning = false
   private isHour: boolean = false
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas
-    this.setSize()
-    !this.isPC && this.visibilitychange()
-
+  constructor() {
     ChartJS.register(ChartDataLabels)
     ChartJS.register(zoomPlugin)
     ChartJS.register(getIncreaseLegendSpacingPlugin(this))
     ChartJS.register(getEventCatcherPlugin(this))
+  }
+
+  init(canvas: HTMLCanvasElement) {
+    this.setSize()
+    this.canvas = canvas
+    !this.isPC && this.visibilitychange()
   }
 
   private visibilitychange() {

@@ -4,9 +4,10 @@ const categoryParam: urlParamsValue<'category'>[] = ['in', 'all']
 const barParam: urlParamsValue<'bar'>[] = ['ranking', 'rising', 'none']
 const limitParam: urlParamsValue<'limit'>[] = ['hour', 'week', 'month', 'all']
 
-const defaultCategory: urlParamsValue<'category'> = 'in'
-const defaultBar: urlParamsValue<'bar'> = 'ranking'
-const defaultLimit: urlParamsValue<'limit'> = 'week'
+export const defaultCategory: urlParamsValue<'category'> = 'in'
+export const defaultBar: urlParamsValue<'bar'> = 'ranking'
+export const defaultLimit: urlParamsValue<'limit'> = 'week'
+export const defaultLimitNum: ChartLimit | 25 = 8
 
 const validParam = <T extends urlParamsName>(definition: urlParamsValue<T>[], url: URL, name: T)
   : urlParamsValue<T> | null => {
@@ -25,8 +26,10 @@ export function getCurrentUrlParams(): urlParams {
 
 export function setUrlParams(params: urlParams) {
   window.history.replaceState(null, '', updateURLSearchParams(
-    params.category === defaultCategory && params.bar === defaultBar && params.limit === defaultLimit
-      ? null
-      : params
+    {
+      bar: params.bar === defaultBar ? '' : params.bar,
+      category: params.category === defaultCategory || params.bar === 'none' ? '' : params.category,
+      limit: params.limit === defaultLimit ? '' : params.limit
+    }
   ))
 }

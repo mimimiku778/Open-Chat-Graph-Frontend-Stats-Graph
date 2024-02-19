@@ -10,6 +10,7 @@ export default async function fetcher<T,>(url: string) {
   }
 
   const response = await fetch(url)
+
   const data: T | ErrorResponse = await response.json()
   if (!response.ok) {
     const errorMessage = (data as ErrorResponse).error.message

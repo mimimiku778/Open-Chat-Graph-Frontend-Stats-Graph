@@ -2,11 +2,13 @@ import { signal } from "@preact/signals"
 import { chatArgDto, fetchChart, statsDto } from "../util/fetchRenderer"
 import OpenChatChart from "../classes/OpenChatChart"
 import { getCurrentUrlParams, setUrlParams } from "../util/urlParam"
-import { toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns"
+import { toggleDisplay24h, toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns"
+import { setRenderPositionBtns } from "../app"
 
-export const chart = new OpenChatChart(document.getElementById('chart-preact-canvas') as HTMLCanvasElement)
+export const chart = new OpenChatChart
+export const loading = signal(false)
 export const toggleShowCategorySignal = signal(true)
-export const rankingRisingSignal = signal<ToggleChart>('ranking')
+export const rankingRisingSignal = signal<ToggleChart>('none')
 export const categorySignal = signal<urlParamsValue<'category'>>('in')
 export const limitSignal = signal<ChartLimit | 25>(8)
 
@@ -51,10 +53,10 @@ export function setUrlParamsFromChartStates() {
 
 export function initDisplay() {
   // カテゴリがその他の場合
-  if (!chatArgDto.categoryKey) {
+  if (chatArgDto.categoryKey === 0) {
     toggleShowCategorySignal.value = false
     categorySignal.value = 'all'
-    rankingRisingSignal.value = 'rising'
+    rankingRisingSignal.value = 'none'
   }
 
   // 最新１週間のデータがない場合
@@ -66,6 +68,21 @@ export function initDisplay() {
   if (statsDto.date.length <= 31) {
     toggleDisplayAll.value = false
   }
+
+  // ランキング未掲載の場合
+  if (chatArgDto.categoryKey === null) {
+    setRenderPositionBtns(false)
+    chart.setIsHour(false)
+    toggleDisplay24h.value = false
+
+    categorySignal.value = 'in'
+    rankingRisingSignal.value = 'none'
+    limitSignal.value === 25 && (limitSignal.value = 8)
+
+    return false
+  }
+
+  return true
 }
 
 export function handleChangeLimit(limit: ChartLimit | 25) {
@@ -80,7 +97,7 @@ export function handleChangeLimit(limit: ChartLimit | 25) {
   } else {
     chart.update(limit)
   }
-  
+
   setUrlParamsFromChartStates()
 }
 

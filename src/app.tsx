@@ -39,7 +39,10 @@ const init = async () => {
 
 function LoadingSpinner() {
   return (
-    <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+    <Box
+      className="fade-in"
+      sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+    >
       <CircularProgress color="inherit" />
     </Box>
   )

@@ -14,10 +14,11 @@ import { Box, CircularProgress } from '@mui/material'
 
 const renderTab = signal(false)
 const renderPositionBtns = signal(false)
+const positionBtnsHeight = signal(68)
 
 export const setRenderPositionBtns = (toggle: boolean) => {
   renderPositionBtns.value = toggle
-  if (!toggle) document.getElementById('app')!.style.minHeight = '49px'
+  positionBtnsHeight.value = toggle ? 68 : 0
 }
 
 const removeDummyCanvas = () => {
@@ -39,10 +40,7 @@ const init = async () => {
 
 function LoadingSpinner() {
   return (
-    <Box
-      className="fade-in"
-      sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-    >
+    <Box className="fade-in" sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
       <CircularProgress color="inherit" />
     </Box>
   )
@@ -65,7 +63,7 @@ export function App() {
         <canvas id="chart-preact-canvas" ref={canvas}></canvas>
       </div>
       <div style="min-height: 49px">{renderTab.value && <ChartLimitBtns />}</div>
-      <div style="min-height: 68px">{renderPositionBtns.value && <ToggleButtons />}</div>
+      <div style={`min-height: ${positionBtnsHeight.value}px`}>{renderPositionBtns.value && <ToggleButtons />}</div>
     </div>
   )
 }

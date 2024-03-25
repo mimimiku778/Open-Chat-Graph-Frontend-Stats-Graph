@@ -60,7 +60,12 @@ export function App() {
     <div>
       <div class="chart-canvas-box">
         {loading.value && <LoadingSpinner />}
-        <canvas id="chart-preact-canvas" ref={canvas}></canvas>
+        <canvas
+          id="chart-preact-canvas"
+          ref={canvas}
+          aria-label="メンバー数・ランキキング履歴の統計グラフ"
+          role="img"
+        ></canvas>
       </div>
       <div style="min-height: 49px">{renderTab.value && <ChartLimitBtns />}</div>
       <div style={`min-height: ${positionBtnsHeight.value}px`}>{renderPositionBtns.value && <ToggleButtons />}</div>

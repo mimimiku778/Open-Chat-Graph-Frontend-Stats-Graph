@@ -2,7 +2,7 @@ import OpenChatChart from "../../OpenChatChart"
 
 /** @ts-ignore */
 export default function getIncreaseLegendSpacingPlugin(ocChart: OpenChatChart) {
-  const paddingTop = ocChart.isPC ? 14 : 12
+  const paddingTop = ocChart.isPC ? 4 : 4
 
   return {
     id: "increase-legend-spacing",

@@ -51,7 +51,7 @@ export default function ToggleButtons() {
       justifyContent="center"
       m={isMiniMobile ? '0 -1rem' : '0'}
       gap={isMiniMobile ? '2px' : '1rem'}
-      sx={{ pt: '2rem' }}
+      sx={{ pt: '1rem' }}
     >
       <CategoryToggle />
       <Stack direction="row" spacing={1} alignItems="center">

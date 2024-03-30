@@ -18,7 +18,7 @@ const positionBtnsHeight = signal(68)
 
 export const setRenderPositionBtns = (toggle: boolean) => {
   renderPositionBtns.value = toggle
-  positionBtnsHeight.value = toggle ? 68 : 0
+  positionBtnsHeight.value = toggle ? 52 : 0
 }
 
 const removeDummyCanvas = () => {
@@ -67,7 +67,7 @@ export function App() {
           role="img"
         ></canvas>
       </div>
-      <div style="min-height: 49px">{renderTab.value && <ChartLimitBtns />}</div>
+      <div style="min-height: 49px;  margin-top: -16px;">{renderTab.value && <ChartLimitBtns />}</div>
       <div style={`min-height: ${positionBtnsHeight.value}px`}>{renderPositionBtns.value && <ToggleButtons />}</div>
     </div>
   )

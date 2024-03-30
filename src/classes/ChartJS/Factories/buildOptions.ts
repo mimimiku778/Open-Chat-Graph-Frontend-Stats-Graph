@@ -7,7 +7,7 @@ import { getHourTicksFormatterCallback } from '../Callback/getHourTicksFormatter
 
 const aspectRatio = (ocChart: OpenChatChart) => {
   ocChart.setSize()
-  return ocChart.isMiniMobile ? 1.1 / 1 : ocChart.isPC ? 1.7 / 1 : 1.2 / 1
+  return ocChart.isMiniMobile ? 1.2 / 1 : ocChart.isPC ? 1.8 / 1 : 1.4 / 1
 }
 
 export default function buildOptions(ocChart: OpenChatChart, plugins: any)
@@ -34,7 +34,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
           ? 12
           : ticksFontSizeMobile
 
-  const paddingX = isWeekly ? 20 : 17
+  const paddingX = 20
   const paddingY = isWeekly ? 0 : 5
   const displayY = !isWeekly
 

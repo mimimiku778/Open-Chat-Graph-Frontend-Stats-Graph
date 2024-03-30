@@ -27,11 +27,11 @@ export default function buildPlugin(ocChart: OpenChatChart): any {
       onClick: () => false,
       labels: {
         font: {
-          weight: 700,
-          size: ocChart.isPC ? 13.5 : (ocChart.isMiniMobile ? 12 : 13),
+          weight: 'normal',
+          size: ocChart.isPC ? 12 : (ocChart.isMiniMobile ? 11 : 11),
           family: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
         },
-        padding: 12,
+        padding: 6,
         color: '#111',
       },
     },

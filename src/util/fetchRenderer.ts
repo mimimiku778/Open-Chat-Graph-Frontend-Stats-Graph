@@ -1,5 +1,4 @@
 import { categorySignal, chart, limitSignal, loading, rankingRisingSignal } from "../signal/chartState";
-import { toggleDisplay24h } from "../components/ChartLimitBtns";
 import { setRenderPositionBtns } from '../app';
 import fetcher from "./fetcher";
 import { defaultBar, defaultCategory, defaultLimitNum } from "./urlParam";
@@ -113,29 +112,6 @@ export async function fetchChart(animation: boolean) {
     if (!isDefaultGraph) {
       setRenderPositionBtns(true)
       renderChart(param, animation, limit)(data)
-      return
-    }
-
-    // 順位データがない場合
-    if (
-      statsDto.date.length > 1
-      && !data.position.some(v => v !== 0 && v !== null)
-    ) {
-      setRenderPositionBtns(false)
-      toggleDisplay24h.value = false
-      renderMemberChart(true, limit)(statsDto)
-      return
-    }
-
-    // 最新１週間の順位データがない場合
-    if (
-      statsDto.date.length >= 8
-      && !data.position.slice(data.position.length - 8, data.position.length).some(v => v !== 0 && v !== null)
-    ) {
-      setRenderPositionBtns(true)
-      rankingRisingSignal.value = 'none'
-      toggleDisplay24h.value = false
-      renderMemberChart(true, limit)(statsDto)
       return
     }
 

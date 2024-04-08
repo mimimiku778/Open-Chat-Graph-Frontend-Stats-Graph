@@ -4,16 +4,32 @@ const categoryParam: urlParamsValue<'category'>[] = ['in', 'all']
 const barParam: urlParamsValue<'bar'>[] = ['ranking', 'rising', 'none']
 const limitParam: urlParamsValue<'limit'>[] = ['hour', 'week', 'month', 'all']
 
-export const defaultCategory: urlParamsValue<'category'> = 'in'
-export const defaultBar: urlParamsValue<'bar'> = 'ranking'
-export const defaultLimit: urlParamsValue<'limit'> = 'week'
-export const defaultLimitNum: ChartLimit | 25 = 8
-
 const validParam = <T extends urlParamsName>(definition: urlParamsValue<T>[], url: URL, name: T)
   : urlParamsValue<T> | null => {
   const param = url.searchParams.get(name) ?? ''
+  return validParamString<T>(definition, param)
+}
+
+const validParamString = <T extends urlParamsName>(definition: urlParamsValue<T>[], param: string)
+  : urlParamsValue<T> | null => {
   return definition.includes(param as never) ? param as urlParamsValue<T> : null
 }
+
+const defaultBarLocalStorageName = 'chartDefaultBar'
+
+export function setStoregeBarSetting(bar: ToggleChart) {
+  localStorage.setItem(defaultBarLocalStorageName, bar)
+}
+
+function getStoregeBarSetting(defaultBar: ToggleChart) {
+  const bar = localStorage.getItem(defaultBarLocalStorageName)
+  return bar ? validParamString<'bar'>(barParam, bar) ?? defaultBar : defaultBar
+}
+
+export const defaultCategory: urlParamsValue<'category'> = 'in'
+export const defaultBar: urlParamsValue<'bar'> = getStoregeBarSetting('none')
+export const defaultLimit: urlParamsValue<'limit'> = 'week'
+export const defaultLimitNum: ChartLimit | 25 = 8
 
 export function getCurrentUrlParams(): urlParams {
   const url = new URL(window.location.href);
@@ -33,3 +49,4 @@ export function setUrlParams(params: urlParams) {
     }
   ))
 }
+

@@ -5,6 +5,8 @@ import { getCurrentUrlParams, setUrlParams } from "../util/urlParam"
 import { toggleDisplay24h, toggleDisplayAll, toggleDisplayMonth } from "../components/ChartLimitBtns"
 import { setRenderPositionBtns } from "../app"
 
+
+
 export const chart = new OpenChatChart
 export const loading = signal(false)
 export const toggleShowCategorySignal = signal(true)

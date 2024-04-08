@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'preact/hooks'
+import { useEffect, useRef } from 'preact/hooks'
 import ChartLimitBtns from './components/ChartLimitBtns'
 import ToggleButtons from './components/ToggleButtons'
 import { signal } from '@preact/signals'
@@ -14,15 +14,9 @@ import { Box, CircularProgress } from '@mui/material'
 
 const renderTab = signal(false)
 const renderPositionBtns = signal(false)
-const positionBtnsHeight = signal(68)
 
 export const setRenderPositionBtns = (toggle: boolean) => {
   renderPositionBtns.value = toggle
-  positionBtnsHeight.value = toggle ? 52 : 0
-}
-
-const removeDummyCanvas = () => {
-  document.getElementById('dummy-canvas')!.classList.toggle('chart-canvas-box')
 }
 
 const init = async () => {
@@ -49,8 +43,6 @@ function LoadingSpinner() {
 export function App() {
   const canvas = useRef<null | HTMLCanvasElement>(null)
 
-  useLayoutEffect(removeDummyCanvas, [])
-
   useEffect(() => {
     chart.init(canvas.current!)
     init()
@@ -58,7 +50,7 @@ export function App() {
 
   return (
     <div>
-      <div class="chart-canvas-box">
+      <div class="chart-canvas-box" style={{ position: 'absolute', top: 0, left: 0 }}>
         {loading.value && <LoadingSpinner />}
         <canvas
           id="chart-preact-canvas"
@@ -67,8 +59,12 @@ export function App() {
           role="img"
         ></canvas>
       </div>
-      <div style="min-height: 49px;  margin-top: -16px;">{renderTab.value && <ChartLimitBtns />}</div>
-      <div style={`min-height: ${positionBtnsHeight.value}px`}>{renderPositionBtns.value && <ToggleButtons />}</div>
+      <div style="min-height: 49px;">{renderTab.value && <ChartLimitBtns />}</div>
+      {renderPositionBtns.value && (
+        <div style="min-height: 84px;">
+          <ToggleButtons />
+        </div>
+      )}
     </div>
   )
 }

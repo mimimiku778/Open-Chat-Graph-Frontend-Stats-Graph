@@ -16,9 +16,14 @@ const validParamString = <T extends urlParamsName>(definition: urlParamsValue<T>
 }
 
 const defaultBarLocalStorageName = 'chartDefaultBar'
+const defaultCategoryLocalStorageName = 'chartDefaultCategory'
 
 export function setStoregeBarSetting(bar: ToggleChart) {
   localStorage.setItem(defaultBarLocalStorageName, bar)
+}
+
+export function setStoregeCategorySetting(category: urlParamsValue<'category'>) {
+  localStorage.setItem(defaultCategoryLocalStorageName, category)
 }
 
 function getStoregeBarSetting(defaultBar: ToggleChart) {
@@ -26,7 +31,12 @@ function getStoregeBarSetting(defaultBar: ToggleChart) {
   return bar ? validParamString<'bar'>(barParam, bar) ?? defaultBar : defaultBar
 }
 
-export const defaultCategory: urlParamsValue<'category'> = 'in'
+function getStoregeCategorySetting(defaultCategory: urlParamsValue<'category'>) {
+  const param = localStorage.getItem(defaultCategoryLocalStorageName)
+  return param ? validParamString<'category'>(categoryParam, param) ?? defaultCategory : defaultCategory
+}
+
+export const defaultCategory: urlParamsValue<'category'> = getStoregeCategorySetting('in')
 export const defaultBar: urlParamsValue<'bar'> = getStoregeBarSetting('none')
 export const defaultLimit: urlParamsValue<'limit'> = 'week'
 export const defaultLimitNum: ChartLimit | 25 = 8

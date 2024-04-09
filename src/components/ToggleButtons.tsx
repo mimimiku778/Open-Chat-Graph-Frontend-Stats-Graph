@@ -53,7 +53,7 @@ export default function ToggleButtons() {
         alignItems="center"
         justifyContent={isPc ? 'space-around' : 'space-between'}
       >
-        <Typography variant="h4" fontSize="13px" fontWeight="bold" color="#111">
+        <Typography variant="h3" fontSize="13px" fontWeight="bold" color="#111">
           ランキング・急上昇の順位表示
         </Typography>
         <SettingButton />

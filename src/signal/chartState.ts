@@ -58,7 +58,7 @@ export function initDisplay() {
   if (chatArgDto.categoryKey === 0) {
     toggleShowCategorySignal.value = false
     categorySignal.value = 'all'
-    rankingRisingSignal.value = 'none'
+    rankingRisingSignal.value !== 'rising' && (rankingRisingSignal.value = 'none')
   }
 
   // 最新１週間のデータがない場合

@@ -62,7 +62,7 @@ export default function SettingButton() {
         onClick={handleClick}
         ariat-label="設定"
       >
-        <SettingsIcon color="action" />
+        <SettingsIcon />
       </IconButton>
       <Menu
         id="basic-menu"

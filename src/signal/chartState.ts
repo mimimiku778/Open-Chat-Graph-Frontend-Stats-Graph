@@ -116,3 +116,8 @@ export function handleChangeRankingRising(alignment: ToggleChart) {
   fetchChart(false)
   setUrlParamsFromChartStates()
 }
+
+export function handleChangeEnableZoom(value: boolean) {
+  zoomEnableSignal.value = value
+  chart.updateEnableZoom(value)
+}

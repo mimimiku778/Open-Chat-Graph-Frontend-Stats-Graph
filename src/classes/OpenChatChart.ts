@@ -27,6 +27,7 @@ export default class OpenChatChart implements ChartFactory {
   isZooming = false
   onZooming = false
   onPaning = false
+  enableZoom = false
   private isHour: boolean = false
 
   constructor() {
@@ -92,6 +93,14 @@ export default class OpenChatChart implements ChartFactory {
     this.createChart(true)
 
     return true
+  }
+
+  updateEnableZoom(value: boolean) {
+    if (!this.chart) return
+  
+    this.enableZoom = value
+    this.chart.destroy()
+    this.createChart(false)
   }
 
   setSize() {

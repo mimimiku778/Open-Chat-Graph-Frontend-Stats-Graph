@@ -17,6 +17,8 @@ import {
   handleChangeRankingRising,
   toggleShowCategorySignal,
   limitSignal,
+  handleChangeEnableZoom,
+  zoomEnableSignal,
 } from '../signal/chartState'
 import SettingButton from './SettingButton'
 
@@ -56,10 +58,10 @@ function SwitchLabels() {
   return (
     <FormGroup>
       <FormControlLabel
-        control={<Switch size="small" />}
-        label="グラフ拡大を有効化"
-        sx={{ '.MuiFormControlLabel-label': { fontSize: '12px' } }}
-        onChange={(e: React.TargetedEvent<HTMLInputElement>) => console.log((e.target as any).checked)}
+        control={<Switch size="small" checked={zoomEnableSignal.value} />}
+        label="グラフの移動・拡大"
+        sx={{ '.MuiFormControlLabel-label': { fontSize: '11.5px', textWrap: 'nowrap' } }}
+        onChange={(e: React.TargetedEvent<HTMLInputElement>) => handleChangeEnableZoom((e.target as any).checked)}
       />
     </FormGroup>
   )
@@ -82,6 +84,11 @@ export default function ToggleButtons() {
           ランキング順位表示
         </Typography>
         {limitSignal.value === 0 && !isPc && <SwitchLabels />}
+        {limitSignal.value === 0 && isPc && (
+          <Box sx={{ position: 'absolute', ml: '6rem' }}>
+            <SwitchLabels />
+          </Box>
+        )}
         <SettingButton />
       </Stack>
       <Stack

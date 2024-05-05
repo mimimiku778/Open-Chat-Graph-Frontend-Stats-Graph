@@ -13,6 +13,7 @@ export const toggleShowCategorySignal = signal(true)
 export const rankingRisingSignal = signal<ToggleChart>('none')
 export const categorySignal = signal<urlParamsValue<'category'>>('in')
 export const limitSignal = signal<ChartLimit | 25>(8)
+export const zoomEnableSignal = signal(false)
 
 export function setChartStatesFromUrlParams() {
   const params = getCurrentUrlParams()

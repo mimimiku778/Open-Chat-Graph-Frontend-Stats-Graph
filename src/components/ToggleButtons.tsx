@@ -1,10 +1,22 @@
-import { Box, Chip, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery } from '@mui/material'
+import {
+  Box,
+  Chip,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+  Switch,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  useMediaQuery,
+} from '@mui/material'
 import {
   categorySignal,
   rankingRisingSignal,
   handleChangeCategory,
   handleChangeRankingRising,
   toggleShowCategorySignal,
+  limitSignal,
 } from '../signal/chartState'
 import SettingButton from './SettingButton'
 
@@ -40,6 +52,19 @@ function CategoryToggle() {
   )
 }
 
+function SwitchLabels() {
+  return (
+    <FormGroup>
+      <FormControlLabel
+        control={<Switch size="small" />}
+        label="グラフ拡大を有効化"
+        sx={{ '.MuiFormControlLabel-label': { fontSize: '12px' } }}
+        onChange={(e: React.TargetedEvent<HTMLInputElement>) => console.log((e.target as any).checked)}
+      />
+    </FormGroup>
+  )
+}
+
 export default function ToggleButtons() {
   const isMiniMobile = useMediaQuery('(max-width:359px)')
   const isPc = useMediaQuery('(min-width:512px)')
@@ -54,8 +79,9 @@ export default function ToggleButtons() {
         justifyContent={isPc ? 'space-around' : 'space-between'}
       >
         <Typography variant="h3" fontSize="13px" fontWeight="bold" color="#111">
-          ランキング・急上昇の順位表示
+          ランキング順位表示
         </Typography>
+        {limitSignal.value === 0 && !isPc && <SwitchLabels />}
         <SettingButton />
       </Stack>
       <Stack

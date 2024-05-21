@@ -42,6 +42,7 @@ function LoadingSpinner() {
 
 export function App() {
   const canvas = useRef<null | HTMLCanvasElement>(null)
+  document.getElementById('graph-box')!.style.opacity = '1'
 
   useEffect(() => {
     chart.init(canvas.current!)

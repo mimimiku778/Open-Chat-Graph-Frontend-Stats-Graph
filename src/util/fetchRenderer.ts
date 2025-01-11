@@ -1,7 +1,14 @@
-import { categorySignal, chart, limitSignal, loading, rankingRisingSignal } from "../signal/chartState";
-import { setRenderPositionBtns } from '../app';
-import fetcher from "./fetcher";
-import { defaultBar, defaultCategory, defaultLimitNum } from "./urlParam";
+import {
+  categorySignal,
+  chart,
+  limitSignal,
+  loading,
+  rankingRisingSignal,
+} from '../signal/chartState'
+import { setRenderPositionBtns } from '../app'
+import fetcher from './fetcher'
+import { defaultBar, defaultCategory, defaultLimitNum } from './urlParam'
+import { t } from './translation'
 
 export const chatArgDto: RankingPositionChartArgDto = JSON.parse(
   (document.getElementById('chart-arg') as HTMLScriptElement).textContent!
@@ -9,6 +16,8 @@ export const chatArgDto: RankingPositionChartArgDto = JSON.parse(
 export const statsDto: StatisticsChartDto = JSON.parse(
   (document.getElementById('stats-dto') as HTMLScriptElement).textContent!
 )
+
+export const langCode = chatArgDto.urlRoot.replace(/^\/+/, '') as '' | 'tw' | 'th'
 
 const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
   const query = {
@@ -39,41 +48,49 @@ const getApiQuery = (param: ChartApiParam, isHour: boolean) => {
   return new URLSearchParams(query).toString()
 }
 
-const renderChart = (param: ChartApiParam, animation: boolean, limit: ChartLimit) =>
-  (data: RankingPositionChart) => {
+const renderChart =
+  (param: ChartApiParam, animation: boolean, limit: ChartLimit) => (data: RankingPositionChart) => {
     loading.value = false
     const isRising = param === 'rising' || param === 'rising_all'
 
-    chart.render({
-      date: data.date.length ? data.date : statsDto.date,
-      graph1: data.member.length ? data.member : statsDto.member,
-      graph2: data.position,
-      time: data.time,
-      totalCount: data.totalCount,
-    }, {
-      label1: 'メンバー数',
-      label2: isRising
-        ? (chart.getIsHour() ? '公式急上昇の順位' : '公式急上昇の最高順位')
-        : (chart.getIsHour() ? '公式ランキングの順位' : '公式ランキングの順位'),
-      category: param.indexOf('all') !== -1 ? 'すべて' : chatArgDto.categoryName,
-      isRising
-    }, animation, limit)
+    chart.render(
+      {
+        date: data.date.length ? data.date : statsDto.date,
+        graph1: data.member.length ? data.member : statsDto.member,
+        graph2: data.position,
+        time: data.time,
+        totalCount: data.totalCount,
+      },
+      {
+        label1: t('メンバー数'),
+        label2: isRising ? t('公式急上昇の順位') : t('公式ランキングの順位'),
+        category: param.indexOf('all') !== -1 ? t('すべて') : chatArgDto.categoryName,
+        isRising,
+      },
+      animation,
+      limit
+    )
   }
 
-const renderMemberChart = (animation: boolean, limit: ChartLimit) =>
-  (data: RankingPositionChart | StatisticsChartDto) => {
+const renderMemberChart =
+  (animation: boolean, limit: ChartLimit) => (data: RankingPositionChart | StatisticsChartDto) => {
     loading.value = false
-    chart.render({
-      date: data.date,
-      graph1: data.member,
-      graph2: [],
-      time: [],
-      totalCount: [],
-    }, {
-      label1: 'メンバー数',
-      label2: '',
-      category: chatArgDto.categoryName
-    }, animation, limit)
+    chart.render(
+      {
+        date: data.date,
+        graph1: data.member,
+        graph2: [],
+        time: [],
+        totalCount: [],
+      },
+      {
+        label1: t('メンバー数'),
+        label2: '',
+        category: chatArgDto.categoryName,
+      },
+      animation,
+      limit
+    )
   }
 
 export function renderChartWithoutRanking() {
@@ -99,15 +116,18 @@ export async function fetchChart(animation: boolean) {
     return
   }
 
-  const param: ChartApiParam = `${rankingRisingSignal.value}${categorySignal.value === 'all' ? '_all' : ''}`
+  const param: ChartApiParam = `${rankingRisingSignal.value}${
+    categorySignal.value === 'all' ? '_all' : ''
+  }`
 
   loading.value = true
   await fetcher<RankingPositionChart>(
     `${chatArgDto.baseUrl}/oc/${chatArgDto.id}/${path}?${getApiQuery(param, false)}`
   ).then((data) => {
-    const isDefaultGraph = limitSignal.value === defaultLimitNum
-      && rankingRisingSignal.value === defaultBar
-      && categorySignal.value === defaultCategory
+    const isDefaultGraph =
+      limitSignal.value === defaultLimitNum &&
+      rankingRisingSignal.value === defaultBar &&
+      categorySignal.value === defaultCategory
 
     if (!isDefaultGraph) {
       setRenderPositionBtns(true)

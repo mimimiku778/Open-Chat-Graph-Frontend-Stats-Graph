@@ -1,38 +1,43 @@
 import { ChartConfiguration, Chart as ChartJS } from 'chart.js/auto'
-import OpenChatChart from "../../OpenChatChart"
+import OpenChatChart from '../../OpenChatChart'
 import getVerticalLabelRange from '../Util/getVerticalLabelRange'
 import getRankingBarLabelRange from '../Util/getRankingBarLabelRange'
 import getHorizontalLabelFontColor from '../Callback/getHorizontalLabelFontColor'
 import { getHourTicksFormatterCallback } from '../Callback/getHourTicksFormatterCallback'
+import { sprintfT } from '../../../util/translation'
 
 const aspectRatio = (ocChart: OpenChatChart) => {
   ocChart.setSize()
   return ocChart.isMiniMobile ? 1.2 / 1 : ocChart.isPC ? 1.8 / 1 : 1.4 / 1
 }
 
-export default function buildOptions(ocChart: OpenChatChart, plugins: any)
-  : ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] {
+export default function buildOptions(
+  ocChart: OpenChatChart,
+  plugins: any
+): ChartConfiguration<'bar' | 'line', number[], string | string[]>['options'] {
   const hasPosition = !!ocChart.data.graph2.length
   const limit = ocChart.limit
   const isWeekly = limit === 8
 
-  ChartJS.defaults.borderColor = isWeekly ? 'rgba(0,0,0,0)' : '#efefef';
-
+  ChartJS.defaults.borderColor = isWeekly ? 'rgba(0,0,0,0)' : '#efefef'
 
   const ticksFontSizeMobile = ocChart.isMiniMobile ? 10.5 : 11
 
-  const ticksFontSize =
-    isWeekly
-      ? ocChart.isPC
-        ? 12
-        : ocChart.isMiniMobile ? 11 : 11.5
-      : limit === 31
-        ? ocChart.isPC
-          ? (ocChart.getIsHour() ? 11.5 : 11)
-          : ticksFontSizeMobile
-        : ocChart.isPC
-          ? 12
-          : ticksFontSizeMobile
+  const ticksFontSize = isWeekly
+    ? ocChart.isPC
+      ? 12
+      : ocChart.isMiniMobile
+      ? 11
+      : 11.5
+    : limit === 31
+    ? ocChart.isPC
+      ? ocChart.getIsHour()
+        ? 11.5
+        : 11
+      : ticksFontSizeMobile
+    : ocChart.isPC
+    ? 12
+    : ticksFontSizeMobile
 
   const paddingX = 20
   const paddingY = isWeekly ? 0 : 5
@@ -40,7 +45,7 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
 
   const labelRangeLine = getVerticalLabelRange(ocChart, ocChart.data.graph1)
 
-  const options: ChartConfiguration<"bar" | "line", number[], string | string[]>['options'] = {
+  const options: ChartConfiguration<'bar' | 'line', number[], string | string[]>['options'] = {
     animation: {
       duration: ocChart.animationAll ? undefined : 0,
     },
@@ -61,11 +66,11 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
       x: {
         grid: {
           display: hasPosition ? displayY : true,
-          color: '#efefef'
+          color: '#efefef',
         },
         ticks: {
           color: getHorizontalLabelFontColor,
-          padding: hasPosition ? paddingX : (isWeekly ? 10 : 3),
+          padding: hasPosition ? paddingX : isWeekly ? 10 : 3,
           autoSkip: true,
           maxRotation: 90,
           font: {
@@ -92,10 +97,9 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
           },
           color: '#aaa',
         },
-
       },
     },
-    plugins
+    plugins,
   }
 
   // 最新24時間の場合のticksフォーマッター
@@ -104,11 +108,14 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
   }
 
   if (ocChart.data.graph2.length) {
-    const labelRangeBar = getRankingBarLabelRange(ocChart, ocChart.getReverseGraph2(ocChart.data.graph2))
-    const show = displayY && (ocChart.data.graph2.some(v => v !== 0 && v !== null))
+    const labelRangeBar = getRankingBarLabelRange(
+      ocChart,
+      ocChart.getReverseGraph2(ocChart.data.graph2)
+    )
+    const show = displayY && ocChart.data.graph2.some((v) => v !== 0 && v !== null)
 
     let lastTick = 0
-
+    
     options.scales!.temperatureChart! = {
       position: 'right',
       min: labelRangeBar.dataMin,
@@ -120,14 +127,13 @@ export default function buildOptions(ocChart: OpenChatChart, plugins: any)
       ticks: {
         display: show,
         callback: (v: any) => {
-
           const value = ocChart.graph2Max - v + 1
           let tick = Math.ceil(value)
 
           if (!tick || tick === lastTick) return ''
           lastTick = tick
 
-          return `${tick} 位`
+          return sprintfT('%s 位', tick)
         },
         stepSize: labelRangeBar.stepSize,
         autoSkip: true,

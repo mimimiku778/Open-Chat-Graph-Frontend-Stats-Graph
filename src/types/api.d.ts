@@ -1,8 +1,9 @@
 type RankingPositionChartArgDto = {
   id: number
-  categoryKey: number|null
+  categoryKey: number | null
   categoryName: string
   baseUrl: string
+  urlRoot: string
 }
 
 type StatisticsChartDto = {
@@ -32,8 +33,8 @@ type ToggleChart = 'rising' | 'ranking' | 'none'
 type PotisionPath = 'position_hour' | 'position'
 
 type urlParams = {
-  category: 'in' | 'all',
-  bar: ToggleChart,
+  category: 'in' | 'all'
+  bar: ToggleChart
   limit: 'hour' | 'week' | 'month' | 'all'
 }
 

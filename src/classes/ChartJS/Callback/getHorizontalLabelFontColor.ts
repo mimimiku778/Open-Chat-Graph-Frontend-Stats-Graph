@@ -1,4 +1,6 @@
-import { isRecentString, isYestString } from "./getHourTicksFormatterCallback"
+import { langCode } from '../../../util/fetchRenderer'
+import { weekdays } from '../../../util/translation'
+import { isRecentString, isYestString } from './getHourTicksFormatterCallback'
 
 export default function getHorizontalLabelFontColor(context: any) {
   let label = context.tick.label
@@ -6,9 +8,12 @@ export default function getHorizontalLabelFontColor(context: any) {
     label = label[1]
   }
 
-  if (label.includes('土')) {
+  const saturday = weekdays[langCode][6] ?? weekdays[''][6]
+  const sunday = weekdays[langCode][0] ?? weekdays[''][0]
+
+  if (label.includes(saturday)) {
     return '#44617B'
-  } else if (label.includes('日')) {
+  } else if (label.includes(sunday)) {
     return '#9C3848'
   } else if (label.includes(isYestString)) {
     // 最新24時間表示で昨日の時間の場合

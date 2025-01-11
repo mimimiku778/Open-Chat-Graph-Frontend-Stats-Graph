@@ -1,19 +1,26 @@
-import { ChartConfiguration } from 'chart.js/auto';
-import OpenChatChart from "../../OpenChatChart";
-import getDataLabelBarCallback from '../Callback/getDataLabelBarCallback';
-import getLineGradient from '../Callback/getLineGradient';
-import getLineGradientBar from '../Callback/getLineGradientBar';
-import getPointRadiusCallback from '../Callback/getPointRadiusCallback';
-import getDataLabelLineCallback from '../Callback/getDataLabelLineCallback';
+import { ChartConfiguration } from 'chart.js/auto'
+import OpenChatChart from '../../OpenChatChart'
+import getDataLabelBarCallback from '../Callback/getDataLabelBarCallback'
+import getLineGradient from '../Callback/getLineGradient'
+import getLineGradientBar from '../Callback/getLineGradientBar'
+import getPointRadiusCallback from '../Callback/getPointRadiusCallback'
+import getDataLabelLineCallback from '../Callback/getDataLabelLineCallback'
+import { t } from '../../../util/translation'
 
 export const lineEasing = 'easeOutQuart'
 export const barEasing = 'easeOutCirc'
 
 export default function buildData(ocChart: OpenChatChart) {
-  const firstIndex = ocChart.data.graph1.findIndex(v => !!v)
-  const lastIndex = (ocChart.data.graph1.length - 1) - ocChart.data.graph1.slice().reverse().findIndex(v => !!v)
+  const firstIndex = ocChart.data.graph1.findIndex((v) => !!v)
+  const lastIndex =
+    ocChart.data.graph1.length -
+    1 -
+    ocChart.data.graph1
+      .slice()
+      .reverse()
+      .findIndex((v) => !!v)
 
-  const data: ChartConfiguration<"bar" | "line", (number | null)[], string | string[]>['data'] = {
+  const data: ChartConfiguration<'bar' | 'line', (number | null)[], string | string[]>['data'] = {
     labels: ocChart.data.date,
     datasets: [
       {
@@ -24,14 +31,14 @@ export default function buildData(ocChart: OpenChatChart) {
         fill: false,
         backgroundColor: 'rgba(0,0,0,0)',
         borderColor: function (context) {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
+          const chart = context.chart
+          const { ctx, chartArea } = chart
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return;
+            return
           }
-          return getLineGradient(ctx, chartArea);
+          return getLineGradient(ctx, chartArea)
         },
         borderWidth: 3,
         spanGaps: true,
@@ -57,25 +64,25 @@ export default function buildData(ocChart: OpenChatChart) {
       label: `${ocChart.option.label2} | ${ocChart.option.category}`,
       data: ocChart.getReverseGraph2(ocChart.data.graph2),
       backgroundColor: function (context) {
-        const chart = context.chart;
-        const { ctx, chartArea } = chart;
+        const chart = context.chart
+        const { ctx, chartArea } = chart
 
         if (!chartArea) {
           // This case happens on initial chart load
-          return;
+          return
         }
-        return getLineGradientBar(ctx, chartArea);
+        return getLineGradientBar(ctx, chartArea)
       },
       barPercentage: ocChart.limit === 8 ? 0.77 : 0.9,
       borderRadius: ocChart.limit === 8 || ocChart.data.date.length < 10 ? 4 : 2,
       datalabels: {
         align: 'start',
         anchor: 'start',
-        formatter: v => {
+        formatter: (v) => {
           if (v === null) return ''
-          return v ? ocChart.graph2Max - v + 1 : '圏外'
+          return v ? ocChart.graph2Max - v + 1 : t('圏外')
         },
-        display: getDataLabelBarCallback(ocChart)
+        display: getDataLabelBarCallback(ocChart),
       },
       yAxisID: 'temperatureChart',
     })
